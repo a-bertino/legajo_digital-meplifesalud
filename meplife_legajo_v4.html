@@ -216,9 +216,17 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
 .pat-t th{border:1px solid #aab;padding:4px 5px;font-size:9px;font-weight:700;text-align:center;background:#f0f4fa;line-height:1.3}
 .pat-t td{border:1px solid #aab;padding:3px 5px;vertical-align:middle;line-height:1.4}
 .pat-t tr:nth-child(even) td{background:#fafbff}
-.pat-radio{display:flex;justify-content:center}
-.pat-radio input{accent-color:var(--blue);width:13px;height:13px}
-.pat-inp{border:none;outline:none;width:100%;font-size:9px;font-family:var(--font);background:transparent}
+.pat-radio{display:flex;justify-content:center;padding:2px 0}
+.pat-lbl{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;cursor:pointer;padding:2px 5px;border-radius:3px;border:1px solid #ccc;user-select:none}
+.pat-lbl input{position:absolute;opacity:0;width:0;height:0}
+.pat-lbl-si{color:#1a7a3a;border-color:#a3d9b3;background:#f0faf3}
+.pat-lbl-no{color:#666;border-color:#ccc;background:#f5f5f5}
+.pat-lbl-si.checked{background:#1a7a3a;color:#fff;border-color:#1a7a3a}
+.pat-lbl-no.checked{background:#888;color:#fff;border-color:#888}
+.pat-row-si td:first-child{background:#e8f8ee!important}
+.pat-inp{border:none;outline:none;width:100%;font-size:9px;font-family:var(--font);background:transparent;padding:0 2px}
+.btn-add-hijo{margin-top:5px;font-size:10px;background:none;border:1px dashed var(--blue);color:var(--blue);border-radius:5px;padding:4px 10px;cursor:pointer;font-family:var(--font);font-weight:600}
+.btn-add-hijo:hover{background:#e8f0fd}
 .dj-t{font-size:9px;color:var(--text);line-height:1.7;margin-bottom:6px}
 .dj-i{font-size:9px;line-height:1.6;margin-bottom:4px}
 .conf-block{border:1px solid #aab;border-radius:2px;margin-bottom:10px}
@@ -406,8 +414,9 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
 
 <!-- ═══════════ LIGHTBOX DOCUMENTOS ═══════════ -->
 <div class="doc-lightbox" id="docLightbox">
-  <img id="docLightboxImg" src="" alt="Documento">
-  <button class="doc-lightbox-close" onclick="document.getElementById('docLightbox').classList.remove('active')">✕ Cerrar</button>
+  <img id="docLightboxImg" src="" alt="Documento" style="display:none">
+  <iframe id="docLightboxPdf" src="" style="display:none;width:90vw;height:80vh;border:none;border-radius:8px" title="PDF"></iframe>
+  <button class="doc-lightbox-close" onclick="closeDocLightbox()">✕ Cerrar</button>
 </div>
 
 
@@ -596,7 +605,7 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
         <div style="font-size:10px;font-weight:700;padding:4px 0;border-bottom:1px solid #dde;margin-bottom:10px">Todos los datos deben completarse de puño y letra del solicitante</div>
         <table class="imc-t">
           <thead><tr><th style="width:78px;text-align:left">PARENTESCO</th><th>APELLIDO Y NOMBRES</th><th style="width:40px">EDAD</th><th style="width:48px">PESO</th><th style="width:52px">ALTURA</th><th style="width:44px">IMC</th></tr></thead>
-          <tbody>
+          <tbody id="imc-tbody">
             <tr><td class="pc">Titular</td><td><input type="text" id="imc-tit-n"></td><td><input type="number" id="imc-tit-e"></td><td><input type="number" id="imc-tit-p" oninput="cIMC('tit')"></td><td><input type="number" id="imc-tit-a" oninput="cIMC('tit')"></td><td><input type="text" id="imc-tit-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
             <tr><td class="pc">Cónyuge</td><td><input type="text" id="imc-con-n"></td><td><input type="number" id="imc-con-e"></td><td><input type="number" id="imc-con-p" oninput="cIMC('con')"></td><td><input type="number" id="imc-con-a" oninput="cIMC('con')"></td><td><input type="text" id="imc-con-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
             <tr><td class="pc">Concubino/a</td><td><input type="text" id="imc-cc-n"></td><td><input type="number" id="imc-cc-e"></td><td><input type="number" id="imc-cc-p" oninput="cIMC('cc')"></td><td><input type="number" id="imc-cc-a" oninput="cIMC('cc')"></td><td><input type="text" id="imc-cc-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
@@ -604,6 +613,7 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
             <tr><td class="pc">Hijo/a 2</td><td><input type="text" id="imc-h2-n"></td><td><input type="number" id="imc-h2-e"></td><td><input type="number" id="imc-h2-p" oninput="cIMC('h2')"></td><td><input type="number" id="imc-h2-a" oninput="cIMC('h2')"></td><td><input type="text" id="imc-h2-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
           </tbody>
         </table>
+        <button class="btn-add-hijo" onclick="agregarHijo('imc','imc-tbody')">+ Agregar Hijo/a</button>
         <div style="font-size:12px;font-weight:700;margin:7px 0 4px">CUESTIONARIO DE ANTECEDENTES PERSONALES</div>
         <div style="font-size:9px;color:var(--muted);margin-bottom:8px">Adaptar un criterio uniforme acorde a la imagen y conductas corporativas.</div>
         <div style="overflow-x:auto"><table class="pat-t" id="patTable1"></table></div>
@@ -815,13 +825,14 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
         <div style="font-size:10px;font-weight:700;padding:4px 0;border-bottom:1px solid #dde;margin-bottom:9px">Todos los datos deben completarse de puño y letra del solicitante</div>
         <table class="imc-t">
           <thead><tr><th style="width:78px;text-align:left">PARENTESCO</th><th>APELLIDO Y NOMBRES</th><th style="width:40px">EDAD</th><th style="width:48px">PESO</th><th style="width:52px">ALTURA</th><th style="width:44px">IMC</th></tr></thead>
-          <tbody>
+          <tbody id="pp-imc-tbody">
             <tr><td class="pc">Titular</td><td><input type="text" id="pp-imc-tit-n"></td><td><input type="number" id="pp-imc-tit-e"></td><td><input type="number" id="pp-imc-tit-p" oninput="cIMCpp('tit')"></td><td><input type="number" id="pp-imc-tit-a" oninput="cIMCpp('tit')"></td><td><input type="text" id="pp-imc-tit-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
             <tr><td class="pc">Cónyuge</td><td><input type="text" id="pp-imc-con-n"></td><td><input type="number" id="pp-imc-con-e"></td><td><input type="number" id="pp-imc-con-p" oninput="cIMCpp('con')"></td><td><input type="number" id="pp-imc-con-a" oninput="cIMCpp('con')"></td><td><input type="text" id="pp-imc-con-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
             <tr><td class="pc">Hijo/a 1</td><td><input type="text" id="pp-imc-h1-n"></td><td><input type="number" id="pp-imc-h1-e"></td><td><input type="number" id="pp-imc-h1-p" oninput="cIMCpp('h1')"></td><td><input type="number" id="pp-imc-h1-a" oninput="cIMCpp('h1')"></td><td><input type="text" id="pp-imc-h1-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
             <tr><td class="pc">Hijo/a 2</td><td><input type="text" id="pp-imc-h2-n"></td><td><input type="number" id="pp-imc-h2-e"></td><td><input type="number" id="pp-imc-h2-p" oninput="cIMCpp('h2')"></td><td><input type="number" id="pp-imc-h2-a" oninput="cIMCpp('h2')"></td><td><input type="text" id="pp-imc-h2-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
           </tbody>
         </table>
+        <button class="btn-add-hijo" onclick="agregarHijo('pp-imc','pp-imc-tbody')">+ Agregar Hijo/a</button>
         <div style="font-size:12px;font-weight:700;margin:7px 0 4px">CUESTIONARIO DE ANTECEDENTES PERSONALES</div>
         <div style="overflow-x:auto"><table class="pat-t" id="ppPatTable1"></table></div>
         <div style="display:flex;align-items:center;gap:9px;margin-top:9px;padding-top:8px;border-top:1px solid #dde"><img src="data:image/jpeg;base64,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" style="height:32px;border-radius:3px"><div style="font-size:9px;color:var(--muted)"><strong>0800 444 0418</strong> · www.meplife.com.ar</div></div>
@@ -1088,11 +1099,12 @@ function openDetail(idx){
   if(l.docs&&l.docs.length){
     html+='<div class="doc-grid">';
     l.docs.forEach((d,di)=>{
-      const clickable=d.dataUrl?`onclick="viewDoc('${d.dataUrl}')"`:'';
+      const esPdf=d.tipo&&d.tipo.includes('pdf');
+      const clickable=d.dataUrl?`onclick="viewDoc('${d.dataUrl}','${d.tipo||''}')"`:'';
       html+=`<div class="doc-item" ${clickable}>
-        <div class="doc-item-ico">${d.tipo&&d.tipo.includes('image')?'🖼️':'📄'}</div>
+        <div class="doc-item-ico">${d.tipo&&d.tipo.includes('image')?'🖼️':esPdf?'📑':'📄'}</div>
         <div class="doc-item-name">${d.nombre}</div>
-        ${d.dataUrl?'<div style="font-size:9px;color:var(--blue);margin-top:4px">👁 Ver</div>':''}
+        ${d.dataUrl?`<div style="font-size:9px;color:var(--blue);margin-top:4px">${esPdf?'📄 Ver PDF':'👁 Ver'}</div>`:''}
       </div>`;
     });
     html+='</div>';
@@ -1112,9 +1124,27 @@ function openDetail(idx){
 
 function closeDetail(){ document.getElementById('detailOverlay').classList.remove('active'); }
 
-function viewDoc(dataUrl){
-  document.getElementById('docLightboxImg').src=dataUrl;
+function viewDoc(dataUrl,tipo){
+  const img=document.getElementById('docLightboxImg'),pdf=document.getElementById('docLightboxPdf');
+  const esPdf=tipo&&tipo.includes('pdf');
+  img.style.display=esPdf?'none':'block'; img.src=esPdf?'':dataUrl;
+  pdf.style.display=esPdf?'block':'none'; pdf.src=esPdf?dataUrl:'';
   document.getElementById('docLightbox').classList.add('active');
+}
+function closeDocLightbox(){
+  document.getElementById('docLightboxPdf').src='';
+  document.getElementById('docLightbox').classList.remove('active');
+}
+
+const imcHijoCount={};
+function agregarHijo(prefix,tbodyId){
+  const n=(imcHijoCount[prefix]=(imcHijoCount[prefix]||2)+1);
+  const tbody=document.getElementById(tbodyId); if(!tbody) return;
+  const ispp=prefix.startsWith('pp');
+  const fn=ispp?`cIMCpp('h${n}')`:`cIMC('h${n}')`;
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td class="pc">Hijo/a ${n}</td><td><input type="text" id="${prefix}-h${n}-n"></td><td><input type="number" id="${prefix}-h${n}-e"></td><td><input type="number" id="${prefix}-h${n}-p" oninput="${fn}"></td><td><input type="number" id="${prefix}-h${n}-a" oninput="${fn}"></td><td><input type="text" id="${prefix}-h${n}-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td>`;
+  tbody.appendChild(tr);
 }
 
 function dlPDF(idx){
@@ -1414,9 +1444,17 @@ const PATS_21_34=[
 
 function buildPatTable(tableId,pats){
   const t=document.getElementById(tableId); if(!t) return;
-  t.innerHTML='<thead><tr><th style="width:38%;text-align:left;font-size:9px"></th><th style="width:6%">SI</th><th style="width:6%">NO</th><th style="width:26%">Integrantes</th><th style="width:14%">Patologías</th><th style="width:10%">Fecha</th></tr></thead><tbody>'+
-  pats.map(([n,txt])=>`<tr><td style="font-size:9px;padding:4px 5px">${n} - ${txt}</td><td class="pat-radio"><input type="radio" name="pat${n}" value="si" style="accent-color:var(--blue);width:13px;height:13px"></td><td class="pat-radio"><input type="radio" name="pat${n}" value="no" checked style="accent-color:var(--blue);width:13px;height:13px"></td><td><input class="pat-inp" type="text" id="patn${n}"></td><td><input class="pat-inp" type="text" id="patp${n}"></td><td><input class="pat-inp" type="text" id="patf${n}" style="text-align:center"></td></tr>`).join('')+
+  t.innerHTML='<thead><tr><th style="width:38%;text-align:left;font-size:9px"></th><th style="width:6%">SI</th><th style="width:6%">NO</th><th style="width:26%">Integrantes</th><th style="width:14%">Patologías</th><th style="width:10%;padding:3px 5px">Fecha</th></tr></thead><tbody>'+
+  pats.map(([n,txt])=>`<tr id="ptr${n}" class="pat-row"><td style="font-size:9px;padding:4px 5px">${n} - ${txt}</td><td class="pat-radio"><label class="pat-lbl pat-lbl-si" id="ptrs${n}"><input type="radio" name="pat${n}" value="si" onchange="setPat('${n}','si')">SI</label></td><td class="pat-radio"><label class="pat-lbl pat-lbl-no checked" id="ptrn${n}"><input type="radio" name="pat${n}" value="no" checked onchange="setPat('${n}','no')">NO</label></td><td><input class="pat-inp" type="text" id="patn${n}"></td><td><input class="pat-inp" type="text" id="patp${n}"></td><td style="padding:3px 5px"><input class="pat-inp" type="text" id="patf${n}" style="text-align:center"></td></tr>`).join('')+
   '</tbody>';
+}
+
+function setPat(n,val){
+  const si=document.getElementById('ptrs'+n),no=document.getElementById('ptrn'+n),row=document.getElementById('ptr'+n);
+  if(!si||!no) return;
+  si.classList.toggle('checked',val==='si');
+  no.classList.toggle('checked',val==='no');
+  if(row) row.classList.toggle('pat-row-si',val==='si');
 }
 
 // ══════════════════════════════════

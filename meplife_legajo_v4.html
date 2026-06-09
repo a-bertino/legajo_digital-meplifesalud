@@ -494,7 +494,8 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
           <div class="hg-cell"><label>Vigencia</label><input type="text" id="d-vigencia" placeholder="dd/mm/aaaa"></div>
         </div>
         <div class="hgrid" style="margin-top:-1px">
-          <div class="hg-cell" style="grid-column:1/3"><label>Asesor Comercial</label><input type="text" id="d-asesor" placeholder="Nombre del asesor"></div>
+          <div class="hg-cell"><label>Asesor Comercial</label><input type="text" id="d-asesor" placeholder="Nombre del asesor"></div>
+          <div class="hg-cell"><label>DNI del Asesor</label><input type="text" id="d-asesor-dni" placeholder="Sin puntos"></div>
           <div class="hg-cell"><label>Cuota $</label><input type="text" id="d-cuota"></div>
         </div>
         <div style="font-size:12px;font-weight:700;color:var(--blue);margin:11px 0 5px;text-transform:uppercase;letter-spacing:.3px">Información para Historia Institucional</div>
@@ -740,7 +741,8 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
           <div class="hg-cell"><label>Vigencia</label><input type="text" id="pp-vigencia" placeholder="dd/mm/aaaa"></div>
         </div>
         <div class="hgrid" style="margin-top:-1px">
-          <div class="hg-cell" style="grid-column:1/3"><label>Asesor Comercial</label><input type="text" id="pp-asesor" placeholder="Nombre del asesor"></div>
+          <div class="hg-cell"><label>Asesor Comercial</label><input type="text" id="pp-asesor" placeholder="Nombre del asesor"></div>
+          <div class="hg-cell"><label>DNI del Asesor</label><input type="text" id="pp-asesor-dni" placeholder="Sin puntos"></div>
           <div class="hg-cell"><label>Cuota $</label><input type="text" id="pp-cuota"></div>
         </div>
         <div class="sec-t">DATOS DEL SOLICITANTE:</div>
@@ -906,6 +908,7 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
         <div class="confirm-title">¡Legajo completado!</div>
         <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:7px">Tu legajo fue firmado página por página y guardado para tu asesor.</div>
         <div class="confirm-num"><div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px">Número de gestión</div><div style="font-size:23px;font-weight:900;color:var(--blue)" id="gest-final">—</div></div>
+        <div id="conf-aviso-asesor" style="display:none;background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:10px 14px;font-size:12px;color:#856404;margin-bottom:8px;text-align:left"><strong>⚠ Atención:</strong> No ingresaste el DNI del asesor. Este legajo no quedará vinculado a ningún vendedor. Pedile a tu asesor que lo registre desde su panel.</div>
         <div class="confirm-item"><span style="font-size:20px">✍️</span><div>Páginas firmadas: <strong id="conf-firmas">—</strong></div></div>
         <div class="confirm-item"><span style="font-size:20px">📞</span><div>Te contactaremos en 24 hs · <strong>0800 444 0418</strong></div></div>
         <div class="confirm-item"><span style="font-size:20px">💬</span><div>WhatsApp: <strong>362 485-9937</strong></div></div>
@@ -935,9 +938,10 @@ const uploadedDocData=[];
 // ══════════════════════════════════
 function storageKey(dni){ return 'meplife_v_'+dni; }
 
-function saveLegajo(data){
-  if(!currentVendorDNI) return;
-  const k=storageKey(currentVendorDNI);
+function saveLegajo(data, vendorDNI){
+  vendorDNI=vendorDNI||currentVendorDNI;
+  if(!vendorDNI) return;
+  const k=storageKey(vendorDNI);
   const lista=JSON.parse(localStorage.getItem(k)||'[]');
   lista.unshift(data);
   // Limitar tamaño: guardar solo últimos 30 legajos
@@ -985,6 +989,10 @@ function goAfiliado(){
   buildPatTable('ppPatTable2',PATS_21_34);
   const hoy=new Date().toLocaleDateString('es-AR');
   ['d-fecha','pp-fecha'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=hoy;});
+  if(currentVendorDNI){
+    ['d-asesor','pp-asesor'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=currentVendorName;});
+    ['d-asesor-dni','pp-asesor-dni'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=currentVendorDNI;});
+  }
 }
 
 function goVendedorLogin(){ goScreen('sVendLogin'); }
@@ -1053,7 +1061,7 @@ function openDetail(idx){
   const campos=[
     ['Nombre',l.nombre],['Tipo',l.tipo==='desreg'?'Desregulado':l.tipo==='mono'?'Monotributo':'Prepago'],
     ['Plan',l.plan||'—'],['Fecha',l.fecha],['N° Gestión',l.gestNum],
-    ['Asesor',l.asesor||'—'],['Email',l.email||'—'],['Teléfono',l.telefono||'—'],['Domicilio',l.domicilio||'—']
+    ['Asesor',l.asesor||'—'],['DNI Asesor',l.asesorDNI||l.vendorDNI||'—'],['Email',l.email||'—'],['Teléfono',l.telefono||'—'],['Domicilio',l.domicilio||'—']
   ];
   campos.forEach(([lb,vl])=>{ html+=`<div class="det-row"><span class="det-lbl">${lb}:</span><span class="det-val">${vl||'—'}</span></div>`; });
   html+='</div>';
@@ -1439,25 +1447,37 @@ function finalizarLegajo(){
   document.getElementById('conf-firmas').textContent=allSigs.length+' páginas';
   showPage('pConfirm');
   document.getElementById('progShell').style.display='none';
+  const avisoEl=document.getElementById('conf-aviso-asesor');
+  if(avisoEl){
+    const asesorDNIField=tipoLegajo==='prepago'?'pp-asesor-dni':'d-asesor-dni';
+    const asesorDNI=(document.getElementById(asesorDNIField)?.value||'').trim().replace(/\D/g,'');
+    const tiene=currentVendorDNI||asesorDNI;
+    avisoEl.style.display=tiene?'none':'block';
+  }
 
   const nombre=tipoLegajo==='prepago'
     ?(document.getElementById('pp-nombre')?.value||'Sin nombre')
     :(document.getElementById('d-nombre')?.value||'Sin nombre');
 
+  const asesorDNIField=tipoLegajo==='prepago'?'pp-asesor-dni':'d-asesor-dni';
+  const asesorDNI=(document.getElementById(asesorDNIField)?.value||'').trim().replace(/\D/g,'');
+  const efectivoVendorDNI=currentVendorDNI||asesorDNI;
+
   const legajoData={
     gestNum, nombre, tipo:tipoLegajo, plan:planPrepago||'—',
     fecha:new Date().toLocaleDateString('es-AR'),
     asesor:tipoLegajo==='prepago'?document.getElementById('pp-asesor')?.value:document.getElementById('d-asesor')?.value,
+    asesorDNI:efectivoVendorDNI,
     email:tipoLegajo==='prepago'?document.getElementById('pp-email')?.value:document.getElementById('d-email')?.value,
     telefono:tipoLegajo==='prepago'?document.getElementById('pp-tel')?.value:document.getElementById('d-tel1')?.value,
     domicilio:tipoLegajo==='prepago'?document.getElementById('pp-dom')?.value:((document.getElementById('d-calle')?.value||'')+' '+(document.getElementById('d-num')?.value||'')),
     firmas:allSigs.length, estado:'completo',
     sigs:buildSigsList(),
     docs:[...uploadedDocData],
-    vendorDNI:currentVendorDNI, // campo de referencia (el afiliado no tiene DNI de vendedor aquí, se registra vacío si lo hace solo)
+    vendorDNI:efectivoVendorDNI,
     pdfData:null
   };
-  saveLegajo(legajoData);
+  saveLegajo(legajoData, efectivoVendorDNI);
 }
 
 function buildSigsList(){

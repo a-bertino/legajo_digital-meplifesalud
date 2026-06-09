@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/meplife_legajo_v4.html" }
+  ]
+}

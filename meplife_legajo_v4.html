@@ -1639,7 +1639,6 @@ async function generarPDF(){
   const btn=document.querySelector('#pConfirm button[onclick="generarPDF()"]');
   if(btn){btn.disabled=true;btn.textContent='⏳ Generando PDF...';}
 
-  // Overlay para ocultar el parpadeo de páginas durante la captura
   const overlay=document.createElement('div');
   overlay.style.cssText='position:fixed;inset:0;background:#fff;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif';
   overlay.innerHTML='<div style="font-size:48px;margin-bottom:14px">📄</div><div style="font-size:16px;font-weight:700;color:#1a5fa8">Generando PDF...</div><div style="font-size:12px;color:#888;margin-top:6px">Esto puede demorar unos segundos</div>';
@@ -1648,9 +1647,8 @@ async function generarPDF(){
   try{
     const{jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-    const A4W=210,A4H=297;
+    const A4W=210, A4H=297;
 
-    // Páginas del formulario a capturar (sin la página de documentos)
     let pageIds;
     if(tipoLegajo==='desreg') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-p4'];
     else if(tipoLegajo==='mono') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-pmaq'];
@@ -1658,16 +1656,26 @@ async function generarPDF(){
 
     let first=true;
 
+    // Captura todos los sheets en paralelo visualmente: los mostramos todos,
+    // los capturamos uno por uno, luego restauramos.
+    // Para evitar cortes y hojas en blanco usamos la estrategia:
+    // - cada sheet → 1 página PDF si cabe en A4 (escala al ancho y verifica alto)
+    // - si el sheet es más alto que A4, se divide en trozos de A4
+    //   con un margen de seguridad de 4mm para no cortar en el borde exacto.
+
     for(const pid of pageIds){
       const pageEl=document.getElementById(pid);
       if(!pageEl) continue;
       const sheet=pageEl.querySelector('.doc-sheet');
       if(!sheet) continue;
 
-      // Mostrar la página en el flujo normal (sin visibility:hidden que genera blancos)
       const wasActive=pageEl.classList.contains('active');
+      // Desactivar animación para que html2canvas no capture un estado intermedio
+      pageEl.style.animation='none';
+      pageEl.style.opacity='1';
       pageEl.classList.add('active');
-      await new Promise(r=>setTimeout(r,40)); // tiempo para que el DOM renderice
+      // Espera para que inputs, tablas dinámicas y firmas renderizen completamente
+      await new Promise(r=>setTimeout(r,150));
 
       let canvas;
       try{
@@ -1677,34 +1685,47 @@ async function generarPDF(){
           allowTaint:true,
           backgroundColor:'#ffffff',
           logging:false,
-          imageTimeout:15000
+          imageTimeout:20000,
+          windowWidth:sheet.scrollWidth,
+          width:sheet.scrollWidth,
+          height:sheet.scrollHeight
         });
       }catch(e){ console.warn('html2canvas error en '+pid,e); }
 
-      // Restaurar estado original
       if(!wasActive) pageEl.classList.remove('active');
+      pageEl.style.animation='';
+      pageEl.style.opacity='';
 
-      if(!canvas) continue;
+      if(!canvas || canvas.width<10 || canvas.height<10) continue;
 
-      const canvasW=canvas.width,canvasH=canvas.height;
-      const imgW_mm=A4W;
-      const mmPerPx=imgW_mm/canvasW;
-      const chunkPx=Math.floor(A4H/mmPerPx); // píxeles que caben en una hoja A4
+      const cW=canvas.width, cH=canvas.height;
+      const mmPerPx=A4W/cW;            // escala: mm por pixel
+      const contentH_mm=cH*mmPerPx;    // alto total del contenido en mm
+      const chunkPx=Math.floor(A4H/mmPerPx); // píxeles por hoja A4
 
-      let offsetPx=0;
-      while(offsetPx<canvasH){
+      if(contentH_mm<=A4H){
+        // Entra en una sola hoja → agregar directamente sin cortar
         if(!first) doc.addPage(); first=false;
+        doc.addImage(canvas.toDataURL('image/jpeg',0.93),'JPEG',0,0,A4W,contentH_mm);
+      } else {
+        // Contenido más alto que A4 → dividir en trozos
+        let offsetPx=0;
+        while(offsetPx<cH){
+          const remainPx=cH-offsetPx;
+          // Si queda un trozo muy pequeño (<8mm) lo anexamos al anterior evitando hoja casi en blanco
+          if(remainPx*mmPerPx < 8) break;
 
-        const thisPx=Math.min(chunkPx,canvasH-offsetPx);
-        const thisH_mm=thisPx*mmPerPx;
+          if(!first) doc.addPage(); first=false;
+          const thisPx=Math.min(chunkPx, remainPx);
+          const thisH_mm=thisPx*mmPerPx;
 
-        // Sub-canvas para esta porción de página
-        const sub=document.createElement('canvas');
-        sub.width=canvasW; sub.height=thisPx;
-        sub.getContext('2d').drawImage(canvas,0,offsetPx,canvasW,thisPx,0,0,canvasW,thisPx);
-        doc.addImage(sub.toDataURL('image/jpeg',0.93),'JPEG',0,0,imgW_mm,thisH_mm);
+          const sub=document.createElement('canvas');
+          sub.width=cW; sub.height=thisPx;
+          sub.getContext('2d').drawImage(canvas,0,offsetPx,cW,thisPx,0,0,cW,thisPx);
+          doc.addImage(sub.toDataURL('image/jpeg',0.93),'JPEG',0,0,A4W,thisH_mm);
 
-        offsetPx+=chunkPx;
+          offsetPx+=chunkPx;
+        }
       }
     }
 

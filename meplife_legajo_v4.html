@@ -1543,6 +1543,12 @@ async function generarPDF(){
   const btn=document.querySelector('#pConfirm button[onclick="generarPDF()"]');
   if(btn){btn.disabled=true;btn.textContent='⏳ Generando PDF...';}
 
+  // Overlay para ocultar el parpadeo de páginas durante la captura
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:#fff;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif';
+  overlay.innerHTML='<div style="font-size:48px;margin-bottom:14px">📄</div><div style="font-size:16px;font-weight:700;color:#1a5fa8">Generando PDF...</div><div style="font-size:12px;color:#888;margin-top:6px">Esto puede demorar unos segundos</div>';
+  document.body.appendChild(overlay);
+
   try{
     const{jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
@@ -1562,9 +1568,10 @@ async function generarPDF(){
       const sheet=pageEl.querySelector('.doc-sheet');
       if(!sheet) continue;
 
-      // Mostrar temporalmente para capturar
-      const wasHidden=pageEl.style.display==='none'||(!pageEl.classList.contains('active')&&pageEl.style.display==='');
-      if(wasHidden){ pageEl.style.display='block'; pageEl.style.visibility='hidden'; }
+      // Mostrar la página en el flujo normal (sin visibility:hidden que genera blancos)
+      const wasActive=pageEl.classList.contains('active');
+      pageEl.classList.add('active');
+      await new Promise(r=>setTimeout(r,40)); // tiempo para que el DOM renderice
 
       let canvas;
       try{
@@ -1573,22 +1580,20 @@ async function generarPDF(){
           useCORS:true,
           allowTaint:true,
           backgroundColor:'#ffffff',
-          scrollX:0,scrollY:0,
           logging:false,
-          imageTimeout:0
+          imageTimeout:15000
         });
       }catch(e){ console.warn('html2canvas error en '+pid,e); }
 
       // Restaurar estado original
-      if(wasHidden){ pageEl.style.display=''; pageEl.style.visibility=''; }
+      if(!wasActive) pageEl.classList.remove('active');
 
       if(!canvas) continue;
 
-      const imgData=canvas.toDataURL('image/jpeg',0.93);
       const canvasW=canvas.width,canvasH=canvas.height;
       const imgW_mm=A4W;
       const mmPerPx=imgW_mm/canvasW;
-      const chunkPx=Math.floor(A4H/mmPerPx); // píxeles por página A4
+      const chunkPx=Math.floor(A4H/mmPerPx); // píxeles que caben en una hoja A4
 
       let offsetPx=0;
       while(offsetPx<canvasH){
@@ -1627,6 +1632,7 @@ async function generarPDF(){
     alert('Error al generar el PDF. Por favor intentá de nuevo.');
     console.error(err);
   }finally{
+    document.body.removeChild(overlay);
     if(btn){btn.disabled=false;btn.textContent='⬇ Descargar PDF completo';}
   }
 }

@@ -1657,43 +1657,54 @@ async function generarPDF(){
 
     // Captura todos los sheets en paralelo visualmente: los mostramos todos,
     // los capturamos uno por uno, luego restauramos.
-    // Para evitar cortes y hojas en blanco usamos la estrategia:
-    // - cada sheet → 1 página PDF si cabe en A4 (escala al ancho y verifica alto)
-    // - si el sheet es más alto que A4, se divide en trozos de A4
-    //   con un margen de seguridad de 4mm para no cortar en el borde exacto.
+    // Estrategia: cada página del formulario = UNA página PDF.
+    // Se captura la página completa (doc-sheet + firma-box) ignorando solo los botones de nav.
+    // Luego se escala para entrar sin cortes en A4.
 
     for(const pid of pageIds){
       const pageEl=document.getElementById(pid);
       if(!pageEl) continue;
-      const sheet=pageEl.querySelector('.doc-sheet');
-      if(!sheet) continue;
+      if(!pageEl.querySelector('.doc-sheet')) continue;
 
       const wasActive=pageEl.classList.contains('active');
-      // Desactivar animación para que html2canvas no capture un estado intermedio
       pageEl.style.animation='none';
       pageEl.style.opacity='1';
+      pageEl.style.background='#f4f7fb'; // fondo igual al app para la captura
       pageEl.classList.add('active');
-      // Espera para que inputs, tablas dinámicas y firmas renderizen completamente
-      await new Promise(r=>setTimeout(r,150));
+      await new Promise(r=>setTimeout(r,200));
+
+      // Re-inicializar firmas que puedan estar en páginas que estaban ocultas
+      pageEl.querySelectorAll('.sig-canvas').forEach(c=>{
+        if(c.width<10){ c.width=c.parentElement?.offsetWidth||320; c.height=110; }
+        // Re-dibujar desde sigData si existe
+        const idx=c.id.replace('sig-','');
+        if(window.sigData&&window.sigData[idx]){
+          const img=new Image(); img.src=window.sigData[idx];
+          img.onload=()=>c.getContext('2d').drawImage(img,0,0);
+        }
+      });
+      await new Promise(r=>setTimeout(r,80));
 
       let canvas;
       try{
-        canvas=await html2canvas(sheet,{
+        canvas=await html2canvas(pageEl,{
           scale:2,
           useCORS:true,
           allowTaint:true,
-          backgroundColor:'#ffffff',
+          backgroundColor:'#f4f7fb',
           logging:false,
           imageTimeout:20000,
-          windowWidth:sheet.scrollWidth,
-          width:sheet.scrollWidth,
-          height:sheet.scrollHeight
+          windowWidth:pageEl.scrollWidth,
+          width:pageEl.scrollWidth,
+          height:pageEl.scrollHeight,
+          ignoreElements:(el)=>el.classList.contains('nav-btns')||el.classList.contains('prog-shell')||el.classList.contains('app-hdr')
         });
       }catch(e){ console.warn('html2canvas error en '+pid,e); }
 
       if(!wasActive) pageEl.classList.remove('active');
       pageEl.style.animation='';
       pageEl.style.opacity='';
+      pageEl.style.background='';
 
       if(!canvas || canvas.width<10 || canvas.height<10) continue;
 
@@ -1701,27 +1712,22 @@ async function generarPDF(){
 
       const cW=canvas.width, cH=canvas.height;
 
-      // Estrategia: cada doc-sheet = UNA sola página A4, sin cortes.
-      // Escalar para que entre completo dentro de A4 (ancho y alto).
-      const scaleByW = A4W / cW;             // si ajustamos por ancho
-      const fitH_byW = cH * scaleByW;         // alto resultante al ajustar por ancho
+      // Escalar para que entre completo en A4 sin cortes
+      const scaleByW = A4W / cW;
+      const fitH_byW  = cH * scaleByW;
 
-      let imgW, imgH, xOff=0, yOff=0;
+      let imgW, imgH, xOff=0;
       if(fitH_byW <= A4H){
-        // Cabe completo ajustando al ancho → usar todo el ancho
         imgW = A4W;
         imgH = fitH_byW;
-        // Centrar verticalmente si hay espacio libre
-        yOff = 0; // alinear arriba para formularios
       } else {
-        // Más alto que A4 → escalar para que entre por altura, centrar horizontalmente
         const scaleByH = A4H / cH;
         imgW = cW * scaleByH;
         imgH = A4H;
         xOff = (A4W - imgW) / 2;
       }
 
-      doc.addImage(canvas.toDataURL('image/jpeg',0.93),'JPEG',xOff,yOff,imgW,imgH);
+      doc.addImage(canvas.toDataURL('image/jpeg',0.93),'JPEG',xOff,0,imgW,imgH);
     }
 
     const g=document.getElementById('gest-final')?.textContent||'';

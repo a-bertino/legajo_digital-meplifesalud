@@ -6,6 +6,7 @@
 <title>MepLife Salud — Legajo Digital</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -1536,250 +1537,98 @@ function buildSigsList(){
 }
 
 // ══════════════════════════════════
-// GENERAR PDF COMPLETO
+// GENERAR PDF COMPLETO (captura real del formulario)
 // ══════════════════════════════════
-function generarPDF(){
-  const{jsPDF}=window.jspdf;
-  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-  const M=14,W=182;
-  const azul=[26,95,168],verde=[26,138,80],gris=[90,110,140];
-  let y=15;
+async function generarPDF(){
+  const btn=document.querySelector('#pConfirm button[onclick="generarPDF()"]');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Generando PDF...';}
 
-  function hdr(title,sub=''){
-    doc.setFillColor(...azul);doc.rect(0,0,210,11,'F');
-    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(8);
-    doc.text('GRUPO MePLIFE SALUD · Legajo Digital · 0800 444 0418',M,7.5);
-    y=16;
-    doc.setTextColor(...azul);doc.setFont('helvetica','bold');doc.setFontSize(11);
-    doc.text(title,M,y);y+=6;
-    if(sub){doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...gris);doc.text(sub,M,y);y+=5;}
-    doc.setTextColor(30,35,64);
-  }
-  function sec(t){
-    if(y>270){doc.addPage();y=15;}
-    doc.setFillColor(...azul);doc.rect(M,y,W,5,'F');
-    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(8);
-    doc.text(t,M+2,y+3.5);y+=8;doc.setTextColor(30,35,64);
-  }
-  function row(lbl,val){
-    if(y>272){doc.addPage();y=15;}
-    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...azul);
-    doc.text(lbl,M,y);
-    doc.setFont('helvetica','normal');doc.setTextColor(30,35,64);
-    const v=val||'—';
-    const lines=doc.splitTextToSize(v,W-doc.getTextWidth(lbl)-3);
-    doc.text(lines,M+doc.getTextWidth(lbl)+2,y);
-    y+=Math.max(5,lines.length*4);
-  }
-  function txt(t,sz=8){
-    if(y>268){doc.addPage();y=15;}
-    const lines=doc.splitTextToSize(t,W);
-    doc.setFont('helvetica','normal');doc.setFontSize(sz);doc.setTextColor(30,35,64);
-    doc.text(lines,M,y);y+=lines.length*(sz*0.42)+2;
-  }
+  try{
+    const{jsPDF}=window.jspdf;
+    const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const A4W=210,A4H=297;
 
-  function addSigBlock(sigIdx,label){
-    const sd=sigData[sigIdx];
-    const ac=sigAclar[sigIdx]||(document.getElementById('sigAclar-'+sigIdx)?.value||'—');
-    const dn=sigDNIs[sigIdx]||(document.getElementById('sigDNI-'+sigIdx)?.value||'—');
-    const ti=sigTimes[sigIdx]||'—';
-    if(y>228){doc.addPage();y=15;}
-    // Caja de firma
-    doc.setFillColor(232,240,251);doc.rect(M,y,W,6,'F');
-    doc.setTextColor(...azul);doc.setFont('helvetica','bold');doc.setFontSize(9);
-    doc.text('✍ FIRMA — '+label,M+2,y+4);y+=9;
-    // Imagen firma
-    if(sd){try{doc.addImage(sd,'PNG',M,y,82,22);}catch(e){}}
-    // Metadatos al lado
-    const mx=M+86;
-    doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.setTextColor(...azul);
-    doc.text('Aclaración:',mx,y+4);
-    doc.setFont('helvetica','normal');doc.setTextColor(30,35,64);
-    doc.text(ac,mx+doc.getTextWidth('Aclaración:')+1,y+4);
-    doc.setFont('helvetica','bold');doc.setTextColor(...azul);
-    doc.text('DNI:',mx,y+10);
-    doc.setFont('helvetica','normal');doc.setTextColor(30,35,64);
-    doc.text(dn,mx+doc.getTextWidth('DNI:')+1,y+10);
-    doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(...gris);
-    doc.text('Fecha: '+ti,mx,y+16);
-    doc.text('Firmado digitalmente — Ley 25.506',mx,y+20);
-    y+=28;
-    doc.setDrawColor(...azul);doc.setLineWidth(0.25);doc.line(M,y,M+W,y);y+=4;
-  }
+    // Páginas del formulario a capturar (sin la página de documentos)
+    let pageIds;
+    if(tipoLegajo==='desreg') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-p4'];
+    else if(tipoLegajo==='mono') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-pmaq'];
+    else pageIds=['pp-p0','pp-p1','pp-p2','pp-p3','pp-p4'];
 
-  if(tipoLegajo==='desreg'||tipoLegajo==='mono'){
-    hdr('SOLICITUD DE INGRESO',tipoLegajo==='mono'?'Monotributo':'Desregulado / Relación de Dependencia');
-    sec('Datos del Titular');
-    row('Apellido y Nombre:',document.getElementById('d-nombre')?.value);
-    row('Documento:',document.getElementById('d-doc')?.value);
-    row('CUIL N°:',document.getElementById('d-cuil')?.value);
-    row('Fecha Nac / Edad:',(document.getElementById('d-fnac')?.value||'')+' / '+(document.getElementById('d-edad')?.value||''));
-    sec('Domicilio');
-    row('Calle N°:',(document.getElementById('d-calle')?.value||'')+' '+(document.getElementById('d-num')?.value||''));
-    row('Localidad:',document.getElementById('d-loc')?.value);
-    row('Email:',document.getElementById('d-email')?.value);
-    row('Tel 1:',document.getElementById('d-tel1')?.value);
-    sec('Información Laboral');
-    row('Empresa:',document.getElementById('d-empresa')?.value);
-    row('CUIT:',document.getElementById('d-cuit')?.value);
-    sec('Plan y Asesor');
-    row('Asesor Comercial:',document.getElementById('d-asesor')?.value);
-    row('Plan:',document.getElementById('d-plan')?.value);
-    row('Vigencia:',document.getElementById('d-vigencia')?.value);
-    row('Cuota $:',document.getElementById('d-cuota')?.value);
-    y+=3;addSigBlock('dm0','Solicitud de Ingreso');
+    let first=true;
 
-    doc.addPage();y=15;
-    hdr('DECLARACIÓN DE ESTADO DE SALUD','Secreto Médico — Preguntas 01 a 20');
-    PATS_1_20.forEach(([n])=>{
-      if(y>268){doc.addPage();y=15;}
-      const si=document.querySelector('input[name="pat'+n+'"][value="si"]');
-      const resp=si&&si.checked?'SI':'NO';
-      doc.setFont('helvetica','bold');doc.setFontSize(7.5);
-      doc.setTextColor(...(resp==='SI'?[180,30,30]:azul));
-      const lines=doc.splitTextToSize(n+' — '+resp,W-3);
-      doc.text(lines,M,y);y+=lines.length*3.4+1;
-    });
-    doc.setTextColor(30,35,64);y+=3;addSigBlock('dm1','Declaración de Salud (01-20)');
+    for(const pid of pageIds){
+      const pageEl=document.getElementById(pid);
+      if(!pageEl) continue;
+      const sheet=pageEl.querySelector('.doc-sheet');
+      if(!sheet) continue;
 
-    doc.addPage();y=15;
-    hdr('DECLARACIÓN DE ESTADO DE SALUD — Continuación','Preguntas 21 a 34 + Declaración Jurada');
-    PATS_21_34.forEach(([n])=>{
-      if(y>268){doc.addPage();y=15;}
-      const si=document.querySelector('input[name="pat'+n+'"][value="si"]');
-      const resp=si&&si.checked?'SI':'NO';
-      doc.setFont('helvetica','bold');doc.setFontSize(7.5);
-      doc.setTextColor(...(resp==='SI'?[180,30,30]:azul));
-      const lines=doc.splitTextToSize(n+' — '+resp,W-3);
-      doc.text(lines,M,y);y+=lines.length*3.4+1;
-    });
-    doc.setTextColor(30,35,64);y+=3;
-    sec('Declaración Jurada');
-    txt('Manifiesto conocer plenamente el Estatuto, Contrato de Adhesión y Reglamentaciones de MEPLIFE SALUD. Declaro bajo juramento no padecer enfermedad alguna salvo lo declarado. Los datos son auténticos.',8);
-    y+=2;addSigBlock('dm2','Declaración de Salud (21-34) + DJ');
+      // Mostrar temporalmente para capturar
+      const wasHidden=pageEl.style.display==='none'||(!pageEl.classList.contains('active')&&pageEl.style.display==='');
+      if(wasHidden){ pageEl.style.display='block'; pageEl.style.visibility='hidden'; }
 
-    doc.addPage();y=15;
-    hdr('NOTA DE CONFORMIDAD','Formularios de Ingreso, Reconocimiento y Bonificación');
-    row('DES N°:',document.getElementById('conf-des-n')?.value);
-    row('SSS N°:',document.getElementById('conf-sss')?.value);
-    row('Obra Social:',(document.getElementById('conf-os-from')?.value||'')+' → '+(document.getElementById('conf-os-to')?.value||''));
-    row('Plan de Salud:',document.getElementById('conf-plan')?.value);
-    row('DNI:',document.getElementById('conf-dni')?.value);
-    y+=2;txt('"De acuerdo con la información brindada, acepto lo mencionado en cada uno de los puntos de la Nota de Conformidad recibida."',8);
-    y+=3;addSigBlock('dm3','Nota de Conformidad');
+      let canvas;
+      try{
+        canvas=await html2canvas(sheet,{
+          scale:2,
+          useCORS:true,
+          allowTaint:true,
+          backgroundColor:'#ffffff',
+          scrollX:0,scrollY:0,
+          logging:false,
+          imageTimeout:0
+        });
+      }catch(e){ console.warn('html2canvas error en '+pid,e); }
 
-    doc.addPage();y=15;
-    if(tipoLegajo==='desreg'){
-      hdr('SOLICITUD DE PLAN SUPERADOR','Compromiso de Pago Adicionales');
-      row('Apellido y Nombre:',document.getElementById('ps-nombre')?.value);
-      row('DNI:',document.getElementById('ps-dni')?.value);
-      row('Plan:',document.getElementById('ps-plan2')?.value);
-      row('Valor Cápita:',document.getElementById('ps-capita')?.value);
-      row('Costo Total:',document.getElementById('ps-costo-total')?.value);
-      row('Diferencia a Abonar:',document.getElementById('ps-diferencia')?.value);
-      y+=3;addSigBlock('dm4','Plan Superador');
-    } else {
-      hdr('OBRA SOCIAL DE MAQUINISTAS DE TEATRO Y TELEVISIÓN','RNOS 1-1130-8');
-      y+=4;
-      txt('Que habiendo recibido la Cartilla médica de la Obra Social y habiendo sido informado de aquellos establecimientos, médicos, prestaciones médicas, farmacéuticas y demás detalles, dejo en el presente pleno consentimiento y conformidad de los servicios e información ofrecidos.',9);
-      row('Lugar y Fecha:',document.getElementById('maq-lugar-fecha')?.value);
-      y+=3;addSigBlock('dmmaq','Maquinistas de Teatro y Televisión');
-    }
-  } else {
-    const planName=planPrepago==='ceibo'?'CEIBO':'ROBLE';
-    hdr('FICHA DE INGRESO — PLAN PREPAGO "'+planName+'"','Cobertura Prepaga de Salud MepLife Salud SRL');
-    sec('Datos del Solicitante');
-    row('Apellido y Nombre:',document.getElementById('pp-nombre')?.value);
-    row('DNI / CUIL:',(document.getElementById('pp-dni')?.value||'')+' / '+(document.getElementById('pp-cuil')?.value||''));
-    row('Fecha Nac / Edad:',(document.getElementById('pp-fnac')?.value||'')+' / '+(document.getElementById('pp-edad')?.value||''));
-    row('Domicilio:',document.getElementById('pp-dom')?.value);
-    row('Localidad / Provincia:',(document.getElementById('pp-loc')?.value||'')+' / '+(document.getElementById('pp-prov')?.value||''));
-    row('Tel / Móvil:',(document.getElementById('pp-tel')?.value||'')+' / '+(document.getElementById('pp-movil')?.value||''));
-    row('Email:',document.getElementById('pp-email')?.value);
-    row('Cápitas / Costo:',(document.getElementById('pp-capitas')?.value||'')+' / $'+(document.getElementById('pp-costo')?.value||''));
-    row('Asesor:',document.getElementById('pp-asesor')?.value);
-    y+=3;addSigBlock('pp0','Ficha de Ingreso Prepago');
+      // Restaurar estado original
+      if(wasHidden){ pageEl.style.display=''; pageEl.style.visibility=''; }
 
-    doc.addPage();y=15;
-    hdr('DECLARACIÓN DE ESTADO DE SALUD','Secreto Médico — Preguntas 01 a 34');
-    PATS_1_20.concat(PATS_21_34).forEach(([n])=>{
-      if(y>268){doc.addPage();y=15;}
-      const si=document.querySelector('input[name="pat'+n+'"][value="si"]');
-      const resp=si&&si.checked?'SI':'NO';
-      doc.setFont('helvetica','bold');doc.setFontSize(7.5);
-      doc.setTextColor(...(resp==='SI'?[180,30,30]:azul));
-      const lines=doc.splitTextToSize(n+' — '+resp,W-3);
-      doc.text(lines,M,y);y+=lines.length*3.4+1;
-    });
-    doc.setTextColor(30,35,64);y+=3;
-    addSigBlock('pp1','Declaración de Salud (01-20)');
-    addSigBlock('pp2','Declaración de Salud (21-34) + DJ');
+      if(!canvas) continue;
 
-    doc.addPage();y=15;
-    hdr('NOTA DE CONFORMIDAD','Prepago');
-    row('DES N°:',document.getElementById('pp-conf-des')?.value);
-    row('Plan:',document.getElementById('pp-conf-plan')?.value);
-    row('DNI:',document.getElementById('pp-conf-dni')?.value);
-    y+=3;addSigBlock('pp3','Nota de Conformidad');
+      const imgData=canvas.toDataURL('image/jpeg',0.93);
+      const canvasW=canvas.width,canvasH=canvas.height;
+      const imgW_mm=A4W;
+      const mmPerPx=imgW_mm/canvasW;
+      const chunkPx=Math.floor(A4H/mmPerPx); // píxeles por página A4
 
-    doc.addPage();y=15;
-    hdr('CONVENIO DE PRESTACIONES — PLAN "'+planName+'"','');
-    row('Nombre:',document.getElementById('pp-conv-nombre')?.value);
-    row('DNI:',document.getElementById('pp-conv-dni')?.value);
-    row('Domicilio:',document.getElementById('pp-conv-dom')?.value);
-    row('Ciudad / Provincia:',(document.getElementById('pp-conv-ciudad')?.value||'')+' / '+(document.getElementById('pp-conv-prov')?.value||''));
-    row('Costo mensual $:',document.getElementById('pp-conv-costo')?.value);
-    row('Vigencia desde:',document.getElementById('pp-conv-inicio')?.value);
-    row('Vigencia hasta:',document.getElementById('pp-conv-fin')?.value);
-    y+=3;addSigBlock('pp4','Convenio de Prestaciones');
-  }
+      let offsetPx=0;
+      while(offsetPx<canvasH){
+        if(!first) doc.addPage(); first=false;
 
-  // Documentos subidos (imágenes en PDF si están disponibles)
-  if(uploadedDocData.length>0){
-    doc.addPage();y=15;
-    hdr('DOCUMENTACIÓN ADJUNTA','Archivos subidos por el afiliado');
-    uploadedDocData.forEach((d,i)=>{
-      if(y>240){doc.addPage();y=15;}
-      doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...azul);
-      doc.text('Documento '+(i+1)+': '+d.nombre,M,y);y+=6;
-      if(d.tipo&&d.tipo.startsWith('image/')&&d.dataUrl){
-        try{
-          doc.addImage(d.dataUrl,d.tipo.split('/')[1].toUpperCase(),M,y,W,70);
-          y+=74;
-        }catch(e){
-          doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...gris);
-          doc.text('(Imagen no pudo ser insertada)',M,y);y+=6;
-        }
-      } else {
-        doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...gris);
-        doc.text('(Archivo PDF adjunto: '+d.nombre+')',M,y);y+=6;
+        const thisPx=Math.min(chunkPx,canvasH-offsetPx);
+        const thisH_mm=thisPx*mmPerPx;
+
+        // Sub-canvas para esta porción de página
+        const sub=document.createElement('canvas');
+        sub.width=canvasW; sub.height=thisPx;
+        sub.getContext('2d').drawImage(canvas,0,offsetPx,canvasW,thisPx,0,0,canvasW,thisPx);
+        doc.addImage(sub.toDataURL('image/jpeg',0.93),'JPEG',0,0,imgW_mm,thisH_mm);
+
+        offsetPx+=chunkPx;
       }
-      y+=4;
-    });
-  }
-
-  // Pie
-  doc.addPage();y=15;
-  doc.setFillColor(...verde);doc.rect(0,y,210,13,'F');
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(9);
-  const g=document.getElementById('gest-final')?.textContent||'';
-  doc.text('Legajo completado · '+g+' · '+new Date().toLocaleString('es-AR'),M,y+8);
-  y+=18;
-  txt('Documento generado por MepLife Salud. Firmas con validez legal — Ley 25.506 de Firma Digital de la República Argentina. Cada firma incluye imagen, aclaración, DNI y fecha/hora del firmante.',8);
-
-  const nbPDF=(tipoLegajo==='prepago'?document.getElementById('pp-nombre')?.value:document.getElementById('d-nombre')?.value)||'afiliado';
-  const pdfBase64=doc.output('datauristring');
-
-  // Actualizar legajo guardado con el PDF
-  if(currentVendorDNI){
-    const k=storageKey(currentVendorDNI);
-    const lista=JSON.parse(localStorage.getItem(k)||'[]');
-    if(lista.length>0&&!lista[0].pdfData){
-      try{lista[0].pdfData=pdfBase64;localStorage.setItem(k,JSON.stringify(lista));}catch(e){/* sin espacio */}
     }
-  }
 
-  doc.save('MepLife_'+nbPDF.replace(/[^a-zA-Z0-9]/g,'_')+'_'+g.replace('#','')+'.pdf');
+    const g=document.getElementById('gest-final')?.textContent||'';
+    const nbPDF=(tipoLegajo==='prepago'?document.getElementById('pp-nombre')?.value:document.getElementById('d-nombre')?.value)||'afiliado';
+    const pdfBase64=doc.output('datauristring');
+
+    // Guardar en localStorage del vendedor para descarga posterior
+    const vendorDNI=currentVendorDNI||(tipoLegajo==='prepago'?document.getElementById('pp-asesor-dni')?.value:document.getElementById('d-asesor-dni')?.value)||'';
+    if(vendorDNI){
+      const k=storageKey(vendorDNI);
+      const lista=JSON.parse(localStorage.getItem(k)||'[]');
+      if(lista.length>0&&!lista[0].pdfData){
+        try{lista[0].pdfData=pdfBase64;localStorage.setItem(k,JSON.stringify(lista));}catch(e){}
+      }
+    }
+
+    doc.save('MepLife_'+nbPDF.replace(/[^a-zA-Z0-9]/g,'_')+'_'+(g.replace('#',''))+'.pdf');
+
+  }catch(err){
+    alert('Error al generar el PDF. Por favor intentá de nuevo.');
+    console.error(err);
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='⬇ Descargar PDF completo';}
+  }
 }
 
 // Init: mostrar pantalla login

@@ -98,6 +98,8 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
 .badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;flex-shrink:0}
 .badge-done{background:var(--green-light);color:var(--green-dark)}
 .badge-pend{background:#fff8e1;color:#b07800}
+.del-btn{flex-shrink:0;background:none;border:1px solid #e0e0e0;border-radius:7px;padding:5px 8px;font-size:14px;cursor:pointer;color:#c0392b;transition:all .15s;line-height:1}
+.del-btn:hover{background:#ffeaea;border-color:#c0392b}
 .vbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .vbtn{padding:10px 16px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
   font-family:var(--font);display:flex;align-items:center;gap:5px;transition:all .15s}
@@ -1132,8 +1134,21 @@ function renderVendorPanel(){
         </div>
       </div>
       <div class="badge ${l.estado==='completo'?'badge-done':'badge-pend'}">${l.estado==='completo'?'✓ Completo':'Pendiente'}</div>
+      <button class="del-btn" onclick="event.stopPropagation();deleteLegajo(${i})" title="Eliminar legajo">🗑</button>
     </div>
   `).join('');
+}
+
+function deleteLegajo(idx){
+  const legajos=getLegajos();
+  const l=legajos[idx];
+  if(!l) return;
+  const nombre=l.nombre||'Sin nombre';
+  if(!confirm('¿Eliminar el legajo de "'+nombre+'"?\nEsta acción no se puede deshacer.')) return;
+  legajos.splice(idx,1);
+  const k=storageKey(currentVendorDNI);
+  localStorage.setItem(k,JSON.stringify(legajos));
+  renderVendorPanel();
 }
 
 function openDetail(idx){

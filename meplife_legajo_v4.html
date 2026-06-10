@@ -1670,11 +1670,13 @@ async function generarPDF(){
 
     let first=true;
 
-    // Captura todos los sheets en paralelo visualmente: los mostramos todos,
-    // los capturamos uno por uno, luego restauramos.
-    // Estrategia: cada página del formulario = UNA página PDF.
-    // Se captura la página completa (doc-sheet + firma-box) ignorando solo los botones de nav.
-    // Luego se escala para entrar sin cortes en A4.
+    // Ancho de renderizado fijo equivalente a A4 a 96dpi.
+    // Forzar este ancho antes de capturar asegura que el contenido
+    // fluya como en papel A4 y no como en pantalla de celular.
+    const RENDER_W = 794;
+    const mainContent = document.getElementById('mainContent');
+    const origMainMaxW = mainContent.style.maxWidth;
+    mainContent.style.maxWidth = 'none';
 
     for(const pid of pageIds){
       const pageEl=document.getElementById(pid);
@@ -1682,23 +1684,25 @@ async function generarPDF(){
       if(!pageEl.querySelector('.doc-sheet')) continue;
 
       const wasActive=pageEl.classList.contains('active');
-      pageEl.style.animation='none';
-      pageEl.style.opacity='1';
-      pageEl.style.background='#f4f7fb'; // fondo igual al app para la captura
+      pageEl.style.cssText += ';animation:none!important;opacity:1!important;width:'+RENDER_W+'px!important;min-width:'+RENDER_W+'px!important;max-width:'+RENDER_W+'px!important;background:#ffffff!important';
       pageEl.classList.add('active');
-      await new Promise(r=>setTimeout(r,200));
+      await new Promise(r=>setTimeout(r,220));
 
-      // Re-inicializar firmas que puedan estar en páginas que estaban ocultas
+      // Redibujar firmas guardadas sobre canvas (pueden estar en blanco si la página estuvo oculta)
+      const sigPromises=[];
       pageEl.querySelectorAll('.sig-canvas').forEach(c=>{
-        if(c.width<10){ c.width=c.parentElement?.offsetWidth||320; c.height=110; }
-        // Re-dibujar desde sigData si existe
         const idx=c.id.replace('sig-','');
-        if(window.sigData&&window.sigData[idx]){
-          const img=new Image(); img.src=window.sigData[idx];
-          img.onload=()=>c.getContext('2d').drawImage(img,0,0);
+        if(sigData&&sigData[idx]){
+          sigPromises.push(new Promise(res=>{
+            const img=new Image();
+            img.onload=()=>{ c.getContext('2d').clearRect(0,0,c.width,c.height); c.getContext('2d').drawImage(img,0,0); res(); };
+            img.onerror=res;
+            img.src=sigData[idx];
+          }));
         }
       });
-      await new Promise(r=>setTimeout(r,80));
+      if(sigPromises.length) await Promise.all(sigPromises);
+      await new Promise(r=>setTimeout(r,60));
 
       let canvas;
       try{
@@ -1706,44 +1710,49 @@ async function generarPDF(){
           scale:2,
           useCORS:true,
           allowTaint:true,
-          backgroundColor:'#f4f7fb',
+          backgroundColor:'#ffffff',
           logging:false,
           imageTimeout:20000,
-          windowWidth:pageEl.scrollWidth,
-          width:pageEl.scrollWidth,
+          windowWidth:RENDER_W,
+          width:RENDER_W,
           height:pageEl.scrollHeight,
-          ignoreElements:(el)=>el.classList.contains('nav-btns')||el.classList.contains('prog-shell')||el.classList.contains('app-hdr')
+          ignoreElements:(el)=>el.classList.contains('nav-btns')
         });
       }catch(e){ console.warn('html2canvas error en '+pid,e); }
 
+      // Restaurar estilos originales
       if(!wasActive) pageEl.classList.remove('active');
-      pageEl.style.animation='';
-      pageEl.style.opacity='';
-      pageEl.style.background='';
+      pageEl.style.cssText=pageEl.style.cssText
+        .replace(/animation:[^;]+;?/g,'')
+        .replace(/opacity:[^;]+;?/g,'')
+        .replace(/width:[^;]+;?/g,'')
+        .replace(/min-width:[^;]+;?/g,'')
+        .replace(/max-width:[^;]+;?/g,'')
+        .replace(/background:[^;]+;?/g,'');
 
       if(!canvas || canvas.width<10 || canvas.height<10) continue;
 
       if(!first) doc.addPage(); first=false;
 
+      // El canvas tiene ancho = RENDER_W * scale = 794*2 = 1588px
+      // Mapeamos directamente a A4 ancho (210mm); verificamos que entre en alto (297mm)
       const cW=canvas.width, cH=canvas.height;
+      const mmPerPx = A4W / cW;
+      const contentH_mm = cH * mmPerPx;
 
-      // Escalar para que entre completo en A4 sin cortes
-      const scaleByW = A4W / cW;
-      const fitH_byW  = cH * scaleByW;
-
-      let imgW, imgH, xOff=0;
-      if(fitH_byW <= A4H){
-        imgW = A4W;
-        imgH = fitH_byW;
+      if(contentH_mm <= A4H){
+        // Entra perfecto — sin cortes, sin compresión
+        doc.addImage(canvas.toDataURL('image/jpeg',0.93),'JPEG',0,0,A4W,contentH_mm);
       } else {
-        const scaleByH = A4H / cH;
-        imgW = cW * scaleByH;
-        imgH = A4H;
-        xOff = (A4W - imgW) / 2;
+        // Contenido supera A4 (form muy largo): escalar para que entre completo
+        const scale = A4H / cH;
+        const fW = cW * scale;
+        const fH = A4H;
+        doc.addImage(canvas.toDataURL('image/jpeg',0.93),'JPEG',(A4W-fW)/2,0,fW,fH);
       }
-
-      doc.addImage(canvas.toDataURL('image/jpeg',0.93),'JPEG',xOff,0,imgW,imgH);
     }
+
+    mainContent.style.maxWidth = origMainMaxW;
 
     const g=document.getElementById('gest-final')?.textContent||'';
     const nbPDF=(tipoLegajo==='prepago'?document.getElementById('pp-nombre')?.value:document.getElementById('d-nombre')?.value)||'afiliado';

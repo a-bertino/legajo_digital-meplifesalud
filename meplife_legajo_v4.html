@@ -32,7 +32,7 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
   background:linear-gradient(160deg,#0b3460 0%,#1a5fa8 55%,#0e7a4a 100%);overflow-y:auto}
 .lg-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px 24px 36px;width:100%}
 .lg-logo-wrap{position:relative;margin-bottom:20px}
-.lg-logo-ring{width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.25)}
+.lg-logo-ring{width:120px;height:120px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,0,0,0.35);overflow:hidden}
 .lg-brand{text-align:center;margin-bottom:8px}
 .lg-brand-grupo{font-size:10px;font-weight:700;color:rgba(255,255,255,0.55);letter-spacing:4px;text-transform:uppercase;margin-bottom:4px}
 .lg-brand-name{font-size:34px;font-weight:900;color:#fff;letter-spacing:-1.5px;line-height:1}
@@ -386,7 +386,7 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
   <div class="lg-hero">
     <div class="lg-logo-wrap">
       <div class="lg-logo-ring">
-        <img src="data:image/jpeg;base64,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" alt="MepLife" style="height:80px;width:auto;mix-blend-mode:multiply">
+        <img src="data:image/jpeg;base64,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" alt="MepLife" style="height:90px;width:auto">
       </div>
     </div>
     <div class="lg-brand">
@@ -1690,116 +1690,241 @@ async function generarPDF(){
   overlay.innerHTML='<div style="font-size:48px;margin-bottom:14px">📄</div><div style="font-size:16px;font-weight:700;color:#1a5fa8">Generando PDF...</div><div style="font-size:12px;color:#888;margin-top:6px">Esto puede demorar unos segundos</div>';
   document.body.appendChild(overlay);
 
+  // Pequeña pausa para que el overlay se muestre antes de bloquear el hilo
+  await new Promise(r=>setTimeout(r,80));
+
   try{
     const{jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-    const A4W=210, A4H=297;
+    const M=14, W=182;
+    const azul=[26,95,168], gris=[90,110,140];
+    let y=15;
 
-    let pageIds;
-    if(tipoLegajo==='desreg') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-p4'];
-    else if(tipoLegajo==='mono') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-pmaq'];
-    else pageIds=['pp-p0','pp-p1','pp-p2','pp-p3','pp-p4'];
+    const fv=id=>document.getElementById(id)?.value||'—';
 
-    let first=true;
+    function hdr(title,sub=''){
+      doc.setFillColor(...azul);doc.rect(0,0,210,11,'F');
+      doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.text('GRUPO MePLIFE SALUD · Legajo Digital · 0800 444 0418',M,7.5);
+      y=16;
+      doc.setTextColor(...azul);doc.setFont('helvetica','bold');doc.setFontSize(11);
+      doc.text(title,M,y);y+=6;
+      if(sub){doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...gris);doc.text(sub,M,y);y+=5;}
+      doc.setTextColor(30,35,64);
+    }
 
-    // Ancho de renderizado fijo equivalente a A4 a 96dpi.
-    // Forzar este ancho antes de capturar asegura que el contenido
-    // fluya como en papel A4 y no como en pantalla de celular.
-    const RENDER_W = 794;
-    const mainContent = document.getElementById('mainContent');
-    const origMainMaxW = mainContent.style.maxWidth;
-    mainContent.style.maxWidth = 'none';
+    function sec(t){
+      if(y>268){doc.addPage();y=15;}
+      doc.setFillColor(...azul);doc.rect(M,y,W,5.5,'F');
+      doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.text(t,M+2,y+3.8);y+=8.5;doc.setTextColor(30,35,64);
+    }
 
-    for(const pid of pageIds){
-      const pageEl=document.getElementById(pid);
-      if(!pageEl) continue;
-      if(!pageEl.querySelector('.doc-sheet')) continue;
-
-      const wasActive=pageEl.classList.contains('active');
-      pageEl.style.cssText += ';animation:none!important;opacity:1!important;width:'+RENDER_W+'px!important;min-width:'+RENDER_W+'px!important;max-width:'+RENDER_W+'px!important;background:#ffffff!important';
-      pageEl.classList.add('active');
-      await new Promise(r=>setTimeout(r,220));
-
-      // Redibujar firmas guardadas sobre canvas (pueden estar en blanco si la página estuvo oculta)
-      const sigPromises=[];
-      pageEl.querySelectorAll('.sig-canvas').forEach(c=>{
-        const idx=c.id.replace('sig-','');
-        if(sigData&&sigData[idx]){
-          sigPromises.push(new Promise(res=>{
-            const img=new Image();
-            img.onload=()=>{ c.getContext('2d').clearRect(0,0,c.width,c.height); c.getContext('2d').drawImage(img,0,0); res(); };
-            img.onerror=res;
-            img.src=sigData[idx];
-          }));
-        }
-      });
-      if(sigPromises.length) await Promise.all(sigPromises);
-      await new Promise(r=>setTimeout(r,60));
-
-      let canvas;
-      try{
-        canvas=await html2canvas(pageEl,{
-          scale:2,
-          useCORS:true,
-          allowTaint:true,
-          backgroundColor:'#ffffff',
-          logging:false,
-          imageTimeout:20000,
-          windowWidth:RENDER_W,
-          width:RENDER_W,
-          height:pageEl.scrollHeight,
-          ignoreElements:(el)=>el.classList.contains('nav-btns')
-        });
-      }catch(e){ console.warn('html2canvas error en '+pid,e); }
-
-      // Restaurar estilos originales
-      if(!wasActive) pageEl.classList.remove('active');
-      pageEl.style.cssText=pageEl.style.cssText
-        .replace(/animation:[^;]+;?/g,'')
-        .replace(/opacity:[^;]+;?/g,'')
-        .replace(/width:[^;]+;?/g,'')
-        .replace(/min-width:[^;]+;?/g,'')
-        .replace(/max-width:[^;]+;?/g,'')
-        .replace(/background:[^;]+;?/g,'');
-
-      if(!canvas || canvas.width<10 || canvas.height<10) continue;
-
-      if(!first) doc.addPage(); first=false;
-
-      // El canvas tiene ancho = RENDER_W * scale = 794*2 = 1588px
-      // Mapeamos directamente a A4 ancho (210mm); verificamos que entre en alto (297mm)
-      const cW=canvas.width, cH=canvas.height;
-      const mmPerPx = A4W / cW;
-      const contentH_mm = cH * mmPerPx;
-
-      if(contentH_mm <= A4H){
-        // Entra perfecto — sin cortes, sin compresión
-        doc.addImage(canvas.toDataURL('image/jpeg',0.93),'JPEG',0,0,A4W,contentH_mm);
+    function row(lbl,val){
+      if(y>268){doc.addPage();y=15;}
+      doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...azul);
+      const lblW=doc.getTextWidth(lbl);
+      doc.text(lbl,M,y);
+      doc.setFont('helvetica','normal');doc.setTextColor(30,35,64);
+      const avail=W-lblW-3;
+      const str=val||'—';
+      if(avail>30){
+        const lines=doc.splitTextToSize(str,avail);
+        doc.text(lines,M+lblW+2,y);
+        y+=Math.max(5.5,lines.length*4.5);
       } else {
-        // Contenido supera A4 (form muy largo): escalar para que entre completo
-        const scale = A4H / cH;
-        const fW = cW * scale;
-        const fH = A4H;
-        doc.addImage(canvas.toDataURL('image/jpeg',0.93),'JPEG',(A4W-fW)/2,0,fW,fH);
+        y+=4.5;
+        const lines=doc.splitTextToSize(str,W);
+        doc.text(lines,M,y);
+        y+=Math.max(5.5,lines.length*4.5);
       }
     }
 
-    mainContent.style.maxWidth = origMainMaxW;
+    function par(t,sz=8){
+      if(y>268){doc.addPage();y=15;}
+      doc.setFont('helvetica','normal');doc.setFontSize(sz);
+      const lines=doc.splitTextToSize(t,W);
+      doc.setTextColor(30,35,64);doc.text(lines,M,y);
+      y+=lines.length*(sz*0.5)+3;
+    }
+
+    function sigBlock(idx,label){
+      const sd=sigData[idx];
+      const ac=sigAclar[idx]||(document.getElementById('sigAclar-'+idx)?.value||'—');
+      const dn=sigDNIs[idx]||(document.getElementById('sigDNI-'+idx)?.value||'—');
+      const ti=sigTimes[idx]||'—';
+      const need=sd?44:26;
+      if(y>297-need-10){doc.addPage();y=15;}
+      doc.setFillColor(232,240,251);doc.rect(M,y,W,6,'F');
+      doc.setTextColor(...azul);doc.setFont('helvetica','bold');doc.setFontSize(9);
+      doc.text('✍ FIRMA — '+label,M+2,y+4.2);y+=9;
+      if(sd){try{doc.addImage(sd,'PNG',M,y,82,22);}catch(e){}}
+      const mx=sd?M+86:M; const mw=sd?W-86:W;
+      doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.setTextColor(...azul);
+      doc.text('Aclaración:',mx,y+4);
+      doc.setFont('helvetica','normal');doc.setTextColor(30,35,64);
+      const acStr=doc.splitTextToSize(ac,mw-doc.getTextWidth('Aclaración:')-2)[0]||ac;
+      doc.text(acStr,mx+doc.getTextWidth('Aclaración:')+1,y+4);
+      doc.setFont('helvetica','bold');doc.setTextColor(...azul);
+      doc.text('DNI:',mx,y+10);
+      doc.setFont('helvetica','normal');doc.setTextColor(30,35,64);
+      doc.text(dn.substring(0,25),mx+doc.getTextWidth('DNI:')+1,y+10);
+      doc.setFontSize(7);doc.setTextColor(...gris);
+      doc.text('Fecha: '+ti,mx,y+16);
+      doc.text('Firmado digitalmente — Ley 25.506',mx,y+20);
+      y+=29;
+      doc.setDrawColor(...azul);doc.setLineWidth(0.25);doc.line(M,y,M+W,y);y+=5;
+    }
+
+    function patRows(pats){
+      pats.forEach(([n,desc])=>{
+        if(y>268){doc.addPage();y=15;}
+        const si=document.querySelector('input[name="pat'+n+'"][value="si"]');
+        const resp=si&&si.checked?'SI':'NO';
+        doc.setFont('helvetica','bold');doc.setFontSize(7.5);
+        doc.setTextColor(...(resp==='SI'?[180,30,30]:azul));
+        const lines=doc.splitTextToSize(n+'. '+resp+' — '+desc,W-2);
+        doc.text(lines,M,y);y+=lines.length*3.6+1;
+      });
+      doc.setTextColor(30,35,64);
+    }
+
+    // ══════════════════════════════
+    //  DESREGULADO / MONOTRIBUTO
+    // ══════════════════════════════
+    if(tipoLegajo==='desreg'||tipoLegajo==='mono'){
+      const sub=tipoLegajo==='mono'?'Monotributo':'Desregulado / Relación de Dependencia';
+
+      hdr('SOLICITUD DE INGRESO',sub);
+      sec('Datos del Titular');
+      row('Apellido y Nombre:',fv('d-nombre'));
+      row('Documento:',fv('d-doc'));
+      row('CUIL N°:',fv('d-cuil'));
+      row('Fecha Nac / Edad:',fv('d-fnac')+' / '+fv('d-edad'));
+      sec('Domicilio');
+      row('Calle N°:',fv('d-calle')+' '+fv('d-num'));
+      row('Localidad:',fv('d-loc'));
+      row('Email:',fv('d-email'));
+      row('Tel 1:',fv('d-tel1'));
+      sec('Información Laboral');
+      row('Empresa:',fv('d-empresa'));
+      row('CUIT:',fv('d-cuit'));
+      sec('Plan y Asesor');
+      row('Asesor Comercial:',fv('d-asesor'));
+      row('Plan:',fv('d-plan'));
+      row('Vigencia:',fv('d-vigencia'));
+      row('Cuota $:',fv('d-cuota'));
+      y+=3;sigBlock('dm0','Solicitud de Ingreso');
+
+      doc.addPage();y=15;
+      hdr('DECLARACIÓN DE ESTADO DE SALUD','Secreto Médico — Preguntas 01 a 20');
+      patRows(PATS_1_20);
+      y+=3;sigBlock('dm1','Declaración de Salud (01-20)');
+
+      doc.addPage();y=15;
+      hdr('DECLARACIÓN DE ESTADO DE SALUD — Continuación','Preguntas 21 a 34 + Declaración Jurada');
+      patRows(PATS_21_34);
+      y+=3;sec('Declaración Jurada');
+      par('Manifiesto conocer plenamente el Estatuto, Contrato de Adhesión y Reglamentaciones de MEPLIFE SALUD. Declaro bajo juramento no padecer enfermedad alguna salvo lo declarado. Los datos son auténticos.',8);
+      y+=2;sigBlock('dm2','Declaración de Salud (21-34) + DJ');
+
+      doc.addPage();y=15;
+      hdr('NOTA DE CONFORMIDAD','Formularios de Ingreso, Reconocimiento y Bonificación');
+      row('DES N°:',fv('conf-des-n'));
+      row('SSS N°:',fv('conf-sss'));
+      row('Obra Social:',fv('conf-os-from')+' → '+fv('conf-os-to'));
+      row('Plan de Salud:',fv('conf-plan'));
+      row('DNI:',fv('conf-dni'));
+      y+=2;par('"De acuerdo con la información brindada, acepto lo mencionado en cada uno de los puntos de la Nota de Conformidad recibida."',8);
+      y+=3;sigBlock('dm3','Nota de Conformidad');
+
+      doc.addPage();y=15;
+      if(tipoLegajo==='desreg'){
+        hdr('SOLICITUD DE PLAN SUPERADOR','Compromiso de Pago Adicionales');
+        row('Apellido y Nombre:',fv('ps-nombre'));
+        row('DNI:',fv('ps-dni'));
+        row('Plan:',fv('ps-plan2'));
+        row('Valor Cápita:',fv('ps-capita'));
+        row('Costo Total:',fv('ps-costo-total'));
+        row('Diferencia a Abonar:',fv('ps-diferencia'));
+        y+=3;sigBlock('dm4','Plan Superador');
+      } else {
+        hdr('OBRA SOCIAL DE MAQUINISTAS DE TEATRO Y TELEVISIÓN','RNOS 1-1130-8');
+        y+=4;
+        par('Que habiendo recibido la Cartilla médica de la Obra Social y habiendo sido informado de aquellos establecimientos, médicos, prestaciones médicas, farmacéuticas y demás detalles, dejo en el presente pleno consentimiento y conformidad de los servicios e información ofrecidos.',9);
+        row('Lugar y Fecha:',fv('maq-lugar-fecha'));
+        y+=3;sigBlock('dmmaq','Maquinistas de Teatro y Televisión');
+      }
+
+    } else {
+      // ══════════════════════════════
+      //  PREPAGO
+      // ══════════════════════════════
+      const planName=planPrepago==='ceibo'?'CEIBO':'ROBLE';
+
+      hdr('FICHA DE INGRESO — PLAN PREPAGO "'+planName+'"','Cobertura Prepaga de Salud MepLife Salud SRL');
+      sec('Datos del Solicitante');
+      row('Apellido y Nombre:',fv('pp-nombre'));
+      row('DNI / CUIL:',fv('pp-dni')+' / '+fv('pp-cuil'));
+      row('Fecha Nac / Edad:',fv('pp-fnac')+' / '+fv('pp-edad'));
+      row('Domicilio:',fv('pp-dom'));
+      row('Localidad / Provincia:',fv('pp-loc')+' / '+fv('pp-prov'));
+      row('Tel / Móvil:',fv('pp-tel')+' / '+fv('pp-movil'));
+      row('Email:',fv('pp-email'));
+      row('Cápitas / Costo:',fv('pp-capitas')+' / $'+fv('pp-costo'));
+      row('Asesor:',fv('pp-asesor'));
+      y+=3;sigBlock('pp0','Ficha de Ingreso Prepago');
+
+      doc.addPage();y=15;
+      hdr('DECLARACIÓN DE ESTADO DE SALUD','Secreto Médico — Preguntas 01 a 20');
+      patRows(PATS_1_20);
+      y+=3;sigBlock('pp1','Declaración de Salud (01-20)');
+
+      doc.addPage();y=15;
+      hdr('DECLARACIÓN DE ESTADO DE SALUD — Continuación','Preguntas 21 a 34');
+      patRows(PATS_21_34);
+      y+=3;sigBlock('pp2','Declaración de Salud (21-34)');
+
+      doc.addPage();y=15;
+      hdr('NOTA DE CONFORMIDAD','Prepago');
+      row('DES N°:',fv('pp-conf-des'));
+      row('Plan:',fv('pp-conf-plan'));
+      row('DNI:',fv('pp-conf-dni'));
+      y+=3;sigBlock('pp3','Nota de Conformidad');
+
+      doc.addPage();y=15;
+      hdr('CONVENIO DE PRESTACIONES — PLAN "'+planName+'"','');
+      row('Nombre:',fv('pp-conv-nombre'));
+      row('DNI:',fv('pp-conv-dni'));
+      row('Domicilio:',fv('pp-conv-dom'));
+      row('Ciudad / Provincia:',fv('pp-conv-ciudad')+' / '+fv('pp-conv-prov'));
+      row('Costo mensual $:',fv('pp-conv-costo'));
+      row('Vigencia desde:',fv('pp-conv-inicio'));
+      row('Vigencia hasta:',fv('pp-conv-fin'));
+      y+=3;sigBlock('pp4','Convenio de Prestaciones');
+    }
+
+    // Documentos adjuntos
+    if(uploadedDocData.length>0){
+      doc.addPage();y=15;
+      hdr('DOCUMENTACIÓN ADJUNTA','Archivos subidos por el afiliado');
+      uploadedDocData.forEach((d,i)=>{
+        if(y>240){doc.addPage();y=15;}
+        doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...azul);
+        doc.text('Documento '+(i+1)+': '+d.nombre,M,y);y+=6;
+        if(d.tipo&&d.tipo.startsWith('image/')&&d.dataUrl){
+          try{doc.addImage(d.dataUrl,d.tipo.split('/')[1].toUpperCase(),M,y,W,70);y+=74;}
+          catch(e){doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...gris);doc.text('(Imagen no insertada)',M,y);y+=6;}
+        } else {
+          doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...gris);
+          doc.text('(Archivo: '+d.nombre+')',M,y);y+=6;
+        }
+        y+=4;
+      });
+    }
 
     const g=document.getElementById('gest-final')?.textContent||'';
     const nbPDF=(tipoLegajo==='prepago'?document.getElementById('pp-nombre')?.value:document.getElementById('d-nombre')?.value)||'afiliado';
-    const pdfBase64=doc.output('datauristring');
-
-    // Guardar en localStorage del vendedor para descarga posterior
-    const vendorDNI=currentVendorDNI||(tipoLegajo==='prepago'?document.getElementById('pp-asesor-dni')?.value:document.getElementById('d-asesor-dni')?.value)||'';
-    if(vendorDNI){
-      const k=storageKey(vendorDNI);
-      const lista=JSON.parse(localStorage.getItem(k)||'[]');
-      if(lista.length>0&&!lista[0].pdfData){
-        try{lista[0].pdfData=pdfBase64;localStorage.setItem(k,JSON.stringify(lista));}catch(e){}
-      }
-    }
-
     doc.save('MepLife_'+nbPDF.replace(/[^a-zA-Z0-9]/g,'_')+'_'+(g.replace('#',''))+'.pdf');
 
   }catch(err){

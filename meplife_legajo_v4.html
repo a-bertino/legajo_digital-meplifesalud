@@ -1324,7 +1324,7 @@ function goAfiliado(){
 function goVendedorLogin(){ goScreen('sVendLogin'); }
 
 function loginVendedor(){
-  const dni=(document.getElementById('vLoginDNI')?.value||'').trim();
+  const dni=(document.getElementById('vLoginDNI')?.value||'').trim().replace(/\D/g,'');
   const nombre=(document.getElementById('vLoginNombre')?.value||'').trim();
   const err=document.getElementById('vLoginErr');
   if(!dni||!nombre){ err.style.display='block'; return; }
@@ -1896,6 +1896,8 @@ function finalizarLegajo(){
     pdfData:null
   };
   saveLegajo(legajoData, efectivoVendorDNI);
+  // Auto-guardar PDF para el vendedor mientras el DOM aún tiene el formulario completo
+  if(efectivoVendorDNI) setTimeout(()=>generarPDF(true), 600);
 }
 
 function buildSigsList(){
@@ -1950,17 +1952,18 @@ function initFechas(){
 // ══════════════════════════════════
 // GENERAR PDF COMPLETO (captura real del formulario)
 // ══════════════════════════════════
-async function generarPDF(){
+async function generarPDF(saveOnly=false){
   const btn=document.querySelector('#pConfirm button[onclick="generarPDF()"]');
-  if(btn){btn.disabled=true;btn.textContent='⏳ Generando PDF...';}
-
-  const overlay=document.createElement('div');
-  overlay.style.cssText='position:fixed;inset:0;background:#fff;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif';
-  overlay.innerHTML='<div style="font-size:48px;margin-bottom:14px">📄</div><div style="font-size:16px;font-weight:700;color:#1a5fa8">Generando PDF...</div><div style="font-size:12px;color:#888;margin-top:6px">Esto puede demorar unos segundos</div>';
-  document.body.appendChild(overlay);
-
-  // Pequeña pausa para que el overlay se muestre antes de bloquear el hilo
-  await new Promise(r=>setTimeout(r,80));
+  let overlay=null;
+  if(!saveOnly){
+    if(btn){btn.disabled=true;btn.textContent='⏳ Generando PDF...';}
+    overlay=document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;background:#fff;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif';
+    overlay.innerHTML='<div style="font-size:48px;margin-bottom:14px">📄</div><div style="font-size:16px;font-weight:700;color:#1a5fa8">Generando PDF...</div><div style="font-size:12px;color:#888;margin-top:6px">Esto puede demorar unos segundos</div>';
+    document.body.appendChild(overlay);
+    // Pequeña pausa para que el overlay se muestre antes de bloquear el hilo
+    await new Promise(r=>setTimeout(r,80));
+  }
 
   try{
     const{jsPDF}=window.jspdf;
@@ -2061,14 +2064,14 @@ async function generarPDF(){
       }catch(e){ console.warn('No se pudo guardar PDF en localStorage:',e); }
     }
 
-    doc.save(fileName);
+    if(!saveOnly) doc.save(fileName);
 
   }catch(err){
-    alert('Error al generar el PDF. Por favor intentá de nuevo.');
+    if(!saveOnly){ alert('Error al generar el PDF. Por favor intentá de nuevo.'); }
     console.error(err);
   }finally{
-    document.body.removeChild(overlay);
-    if(btn){btn.disabled=false;btn.textContent='⬇ Descargar PDF completo';}
+    if(overlay && overlay.parentNode) document.body.removeChild(overlay);
+    if(!saveOnly && btn){btn.disabled=false;btn.textContent='⬇ Descargar PDF completo';}
   }
 }
 

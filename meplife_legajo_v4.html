@@ -1123,12 +1123,62 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
         <div style="font-size:10px;font-weight:700;margin:7px 0 5px"><strong>PRIMERA: COBERTURA</strong></div>
         <div id="conv-tabla-container"></div>
         <div style="font-size:9px;line-height:1.6;margin:7px 0;text-align:justify"><strong>SEGUNDA: COSTO</strong> El afiliado abona del 01 al 10 de cada mes $ <input type="text" id="pp-conv-costo" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:72px"> (Pesos <input type="text" id="pp-conv-costo-let" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;min-width:95px">).</div>
-        <div style="font-size:9px;line-height:1.6;margin:5px 0;text-align:justify"><strong>CUARTA: VIGENCIA</strong> Desde <input type="text" id="pp-conv-inicio" placeholder="dd/mm/aaaa" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9px;font-family:var(--font);background:transparent;width:72px"> hasta <input type="text" id="pp-conv-fin" placeholder="dd/mm/aaaa" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9px;font-family:var(--font);background:transparent;width:72px">. Mínimo 1 año.</div>
-        <div style="font-size:9px;line-height:1.6;margin:5px 0;text-align:justify"><strong>QUINTA: CARENCIAS</strong> Consultas/urgencias: inmediatas · Alta complejidad: 120 días · Internaciones: 90 días · Cirugías: 180 días · Embarazo: 360 días.</div>
-        <div style="margin-top:13px;font-size:10px">Ciudad de <input type="text" id="pp-conv-ciudad2" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:88px">, a los <input type="text" id="pp-conv-dia" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:26px"> días del mes de <input type="text" id="pp-conv-mes" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:66px"> de 20<input type="text" id="pp-conv-anio" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:26px">.</div>
+        <div style="font-size:9px;line-height:1.65;margin:5px 0;text-align:justify"><strong>TERCERA: DECLARACION DEL ESTADO DE SALUD DEL AFILIADO Y GRUPO FAMILIAR:</strong> El afiliado manifiesta que ha suscripto oportunamente la "DECLARACION JURADA DE SALUD", ratificando plenamente bajo juramento y responsabilidades de ley que el estado de salud que declara, ya sea que haga referencia a la situación personal del suscripto y/o de los integrantes de su grupo familiar, es real y ajustado a lo declarado y que no presenta él o sus familiares dolencias y/o preexistencias más que las ya declaradas, manifestando que cualquier condición en la salud del suscribiente y/o de su grupo familiar diferente al expresado, que de ser conocido con anterioridad a la suscripción de esta prestación prepaga de salud hubiera modificado las cláusulas de contratación, ya sea que fueren de prestaciones o de precio, y/o hubieran tornado imposible de dispensar esta cobertura; harán que la misma sea declarada nula, procediéndose de inmediato a la rescisión del contrato, sin obligación alguna de parte de MEPLIFE SALUD SRL y/o cualquier empresa vinculada a la misma, a dispensar las prestaciones de salud ofrecidas. En consecuencia el afiliado renuncia expresamente a efectuar cualquier reclamo extrajudicial y/o judicial; como así también de someter a proceso de mediación, bajo pena de responder por todos los perjuicios que su omisión y/o accionar pudieran generar.-</div>
+        <div style="font-size:9px;line-height:1.65;margin:5px 0;text-align:justify"><strong>CUARTA: VIGENCIA DE LA COBERTURA:</strong> Que el afiliado expresamente reconoce que ha contratado el PLAN PREPAGO DE SALUD que dispensa MEPLIFE SALUD bajo el plan C<u>EIBO</u>, con una vigencia del contrato de cobertura de un año como mínimo de permanencia en la empresa. En consecuencia la vigencia de la cobertura comenzará a surtir sus efectos desde el día <input type="text" id="pp-conv-inicio" placeholder="dd/mm/aaaa" class="pat-fecha" maxlength="10" inputmode="numeric" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9px;font-family:var(--font);background:transparent;width:72px"> venciendo en consecuencia el <input type="text" id="pp-conv-fin" placeholder="dd/mm/aaaa" class="pat-fecha" maxlength="10" inputmode="numeric" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9px;font-family:var(--font);background:transparent;width:72px">. El contrato podrá renovarse por igual plazo una vez operado el vencimiento del mismo.-</div>
+        <div style="font-size:9px;line-height:1.65;margin:5px 0;text-align:justify"><strong>QUINTA: PLAZOS DE CARENCIAS PARA PRESTACIONES:</strong> El afiliado reconoce que a los efectos de utilizar la cobertura del PLAN PREPAGO DE SALUD contratado, MEPLIFE SALUD S.R.L. en aras de dispensar las mismas, cuenta con las siguientes carencias:
+          <ul style="margin:4px 0 4px 16px;padding:0;font-size:9px">
+            <li>Consultas Médicas (Todas las Especialidades): <strong>Inmediata</strong></li>
+            <li>Consulta Odontológica: <strong>Inmediata</strong></li>
+            <li>Odontología (Limpieza y Urgencias): <strong>Inmediata</strong></li>
+            <li>Odontología: <strong>30 días</strong></li>
+            <li>Estudios de baja complejidad (RX – ECO): <strong>Inmediata</strong></li>
+            <li>Estudios de media complejidad: <strong>30 días</strong> – Urgencias Inmediata</li>
+            <li>Estudios de Alta complejidad (TAC –RMN - ECO): <strong>120 días</strong> – Urgencias Inmediata</li>
+            <li>Prestaciones por embarazo: <strong>360 días</strong></li>
+            <li>Internaciones Clínicas: <strong>90 días</strong> – Urgencias Inmediata</li>
+            <li>Intervenciones Quirúrgicas: <strong>180 días</strong> – Urgencias Inmediatas</li>
+            <li>Tratamientos de Alta Complejidad: <strong>270 días</strong></li>
+            <li>Intervenciones Quirúrgicas Alta Complejidad: <strong>360 días</strong></li>
+            <li>Tratamientos de Discapacidad: <strong>360 días</strong></li>
+            <li>Tratamientos de Obesidad: <strong>360 días</strong></li>
+            <li>Fecundación y Embarazo asistido: <strong>360 días</strong></li>
+          </ul>
+          Antes de la concurrencia de los plazos de carencia estipulados precedentemente MEPLIFE SALUD no está obligado a dispensar las coberturas descriptas. En caso de ser consumidos por el afiliado o los integrantes de su grupo familiar, deberá responder el afiliado por todos los perjuicios que su omisión y/o accionar pudieran generar.-
+        </div>
+        <div style="font-size:9px;line-height:1.65;margin:5px 0;text-align:justify"><strong>SEXTA: MORA Y SUSPENSIÓN DE COBERTURA - REHABILITACION DE COBERTURA:</strong> Transcurridos 30 días desde la fecha de vencimiento de la cobertura sin que haya sido abonada la misma a MEPLIFE SALUD SRL (Mora), la cobertura de salud correspondiente al plan contratado queda automáticamente suspendida. Para la rehabilitación de la cobertura, el afiliado deberá saldar el saldo pendiente de pago de su cobertura e intereses a MEPLIFE SALUD SRL, y contar con la aprobación expresa de MEPLIFE SALUD SRL de la rehabilitación de la misma, aprobación que será indispensable para la reanudación de la cobertura, pues MEPLIFE SALUD SRL podrá proceder a rescindir el contrato. De no cumplir con las condiciones establecidas, la cobertura seguirá suspendida y no dará derecho alguno al afiliado y/o beneficiarios a reclamar prestación alguna. Para el caso de que se hayan dispensado prestaciones al afiliado por prestadores de MEPLIFE SALUD SRL encontrándose la cobertura en mora y/o suspendida, dichas prestaciones serán cobradas al afiliado a valores de costos particulares, gestión de cobro que será efectuada por MEPLIFE SALUD SRL en la forma que resulte necesaria.-</div>
+        <div style="font-size:9px;line-height:1.65;margin:5px 0;text-align:justify"><strong>SEPTIMA: OBLIGACION DE PERMANENCIA y CUMPLIMIENTO DEL CONTRATO:</strong> El afiliado se compromete desde el momento de su incorporación al PLAN PREPAGO DE SALUD a mantener su afiliación durante un plazo mínimo de un año, independientemente de la utilización de los servicios, por lo que asume el compromiso de abonar dichos periodos sin excepción alguna. En caso de no realizarlo, MEPLIFE SALUD SRL podrá requerir al afiliado el pago de los importes por dichos periodos, ya sea que fuere vía administrativa, extrajudicial como judicialmente.-</div>
+        <div style="font-size:9px;line-height:1.65;margin:5px 0;text-align:justify"><strong>OCTAVA: INTERPRETACION CONTRACTUAL, DOMICILIOS Y COMPETENCIA:</strong> Cualquier divergencia sobre la interpretación de la cobertura contratada, el afiliado se compromete a someterla a la jurisdicción y competencia de los Tribunales Ordinarios de la ciudad de Salta, renunciando expresamente a cualquier otra jurisdicción. Fijan sus domicilios en los lugares expresamente establecidos en la parte inicial del presente contrato, el cual será el domicilio hábil para las notificaciones entre las partes. Es obligación del afiliado denunciar cualquier cambio de domicilio, pues de no hacerlo las notificaciones cursadas al domicilio primigenio serán consideradas como validas y efectivas.-</div>
+        <div style="margin-top:10px;font-size:9px">Se suscribe el presente instrumento en la ciudad de <input type="text" id="pp-conv-ciudad2" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9px;font-family:var(--font);background:transparent;width:88px">, Provincia de <input type="text" id="pp-conv-prov2" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9px;font-family:var(--font);background:transparent;width:70px">, a los <input type="text" id="pp-conv-dia" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9px;font-family:var(--font);background:transparent;width:26px"> días del mes de <input type="text" id="pp-conv-mes" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9px;font-family:var(--font);background:transparent;width:66px"> de 20<input type="text" id="pp-conv-anio" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9px;font-family:var(--font);background:transparent;width:26px">.-</div>
       </div>
       <div id="fb-pp4"></div>
-      <div class="nav-btns"><button class="btn btn-back" onclick="ppPrev(4)">← Anterior</button><button class="btn btn-next" onclick="ppNext(4)">Continuar →</button></div>
+      <div class="nav-btns"><button class="btn btn-back" onclick="ppPrev(5)">← Anterior</button><button class="btn btn-next" onclick="ppNext(5)">Continuar →</button></div>
+    </div>
+
+    <!-- PP PÁG 5: BONIFICACIONES -->
+    <div class="page" id="pp-p5">
+      <div class="doc-sheet">
+        <div style="text-align:right;margin-bottom:20px"><img id="pp5-logo-img" style="height:44px;border-radius:3px"></div>
+        <div style="text-align:center;font-size:14px;font-weight:900;color:var(--blue);letter-spacing:1px;margin-bottom:25px">INFORMACIÓN SOBRE BONIFICACIONES APLICADAS</div>
+        <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:20px;font-size:10px;font-weight:700">
+          LUGAR Y FECHA <input type="text" id="pp-bon-lugar" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:100px;text-align:center">
+          /
+          <input type="text" id="pp-bon-fecha" placeholder="dd/mm/aaaa" class="pat-fecha" maxlength="10" inputmode="numeric" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:80px;text-align:center">
+        </div>
+        <div style="font-size:10px;line-height:1.7;text-align:justify;margin-bottom:18px">Por medio de la presente declaro conocer y haber sido informado/a de las bonificaciones aplicadas en los Aportes del Plan de Salud contratado las cuales se aplicarán de la siguiente manera:</div>
+        <div style="font-size:10px;font-weight:700;margin-bottom:4px">1 TRIMESTRE (3 MESES) <input type="text" id="pp-bon-pct" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:45px;text-align:center"> %</div>
+        <div style="font-size:8px;font-weight:700;letter-spacing:0.5px;margin-bottom:20px">* APLICA PAGO EN EFECTIVO DEL 1 AL 10 DEL MES</div>
+        <div style="font-size:10px;margin-bottom:35px">Sin más, saludo atentamente.</div>
+        <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-end;margin-top:20px">
+          <div style="font-size:10px;color:var(--blue)">Firma Apellido y Nombre <input type="text" id="pp-bon-firma" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:140px;margin-left:4px"></div>
+          <div style="font-size:10px;color:var(--blue)">Tipo N° de documento <input type="text" id="pp-bon-doc" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:140px;margin-left:4px"></div>
+        </div>
+        <div style="margin-top:40px;padding-top:12px;border-top:1px solid #dde;display:flex;justify-content:space-between;align-items:flex-end">
+          <div style="font-size:16px;font-style:italic;color:var(--blue);line-height:1.3">tu <strong>salud</strong><br>mi <strong>salud</strong><br><em style="font-size:11px">tiene dueño</em></div>
+          <div style="font-size:9px;text-align:right;color:var(--muted)"><strong>0800 444 0418</strong><br><span style="text-decoration:underline">www.meplife.com.ar</span> &nbsp; MeplifeSalud &nbsp; meplifesaludok</div>
+        </div>
+      </div>
+      <div id="fb-pp5"></div>
+      <div class="nav-btns"><button class="btn btn-back" onclick="ppPrev(6)">← Anterior</button><button class="btn btn-next" onclick="ppNext(6)">Continuar →</button></div>
     </div>
 
     <!-- PP DOCS -->
@@ -1475,12 +1525,15 @@ function startPP(){
   buildTablaPrestaciones();
   const sigs=[
     {id:'fb-pp0',idx:'pp0',label:'Ficha de Ingreso Prepago'},
+    {id:'fb-ppsol',idx:'ppsol',label:'Solicitud de Ingreso'},
     {id:'fb-pp1',idx:'pp1',label:'Declaración de Salud (01-20)'},
     {id:'fb-pp2',idx:'pp2',label:'Declaración de Salud (21-34) + DJ'},
     {id:'fb-pp3',idx:'pp3',label:'Nota de Conformidad'},
     {id:'fb-pp4',idx:'pp4',label:'Convenio de Prestaciones'},
+    {id:'fb-pp5',idx:'pp5',label:'Información Bonificaciones'},
   ];
   sigs.forEach(s=>buildFirmaBox(s.id,s.idx,s.label));
+  ['psol-logo-img','pp5-logo-img'].forEach(function(id){var el=document.getElementById(id);if(el)el.src=LOGO_SRC;});
   buildPPProgress(0);
   showPage('pp-p0');
   initSig('pp0');
@@ -1613,9 +1666,9 @@ function dmPrevDocs(){const flow=getDMFlow();dmPrev(flow.indexOf('dm-pdocs'));}
 // ══════════════════════════════════
 // PROGRESO PP
 // ══════════════════════════════════
-const PP_FLOW=['pp-p0','pp-p1','pp-p2','pp-p3','pp-p4','pp-pdocs'];
-const PP_LBL={'pp-p0':'Ficha','pp-p1':'Salud 1-20','pp-p2':'Salud 21-34','pp-p3':'Conformidad','pp-p4':'Convenio','pp-pdocs':'Docs'};
-const PP_SIG={'pp-p0':'pp0','pp-p1':'pp1','pp-p2':'pp2','pp-p3':'pp3','pp-p4':'pp4'};
+const PP_FLOW=['pp-p0','pp-psol','pp-p1','pp-p2','pp-p3','pp-p4','pp-p5','pp-pdocs'];
+const PP_LBL={'pp-p0':'Ficha','pp-psol':'Solicitud','pp-p1':'Salud 1-20','pp-p2':'Salud 21-34','pp-p3':'Conformidad','pp-p4':'Convenio','pp-p5':'Bonificación','pp-pdocs':'Docs'};
+const PP_SIG={'pp-p0':'pp0','pp-psol':'ppsol','pp-p1':'pp1','pp-p2':'pp2','pp-p3':'pp3','pp-p4':'pp4','pp-p5':'pp5'};
 
 function buildPPProgress(cur){
   const c=document.getElementById('progSteps');
@@ -1625,10 +1678,37 @@ function buildPPProgress(cur){
   `).join('');
   document.getElementById('progBar').style.width=(PP_FLOW.length>1?(cur/(PP_FLOW.length-1))*100:0)+'%';
 }
+function syncSolPage(){
+  const g=function(id){const el=document.getElementById(id);return el?el.value:'';};
+  const s=function(id,v){const el=document.getElementById(id);if(el)el.textContent=v;};
+  s('psol-fecha-d',g('pp-fecha'));
+  s('psol-plan-d',g('pp-plan-display'));
+  s('psol-vig-d',g('pp-vigencia'));
+  s('psol-asesor-d',g('pp-asesor'));
+  s('psol-cuota-d',g('pp-cuota'));
+  s('psol-dni-d','DNI '+g('pp-dni'));
+  s('psol-cuil-d',g('pp-cuil'));
+  s('psol-fnac-d',g('pp-fnac'));
+  s('psol-edad-d',g('pp-edad'));
+  s('psol-dom-d',g('pp-dom'));
+  s('psol-loc-d',g('pp-loc'));
+  s('psol-prov-d',g('pp-prov'));
+  s('psol-tel-d',g('pp-tel'));
+  s('psol-email-d',g('pp-email'));
+  s('psol-movil-d',g('pp-movil'));
+  var rows=[['pp-f01n','pp-f01d','pp-f01p','pp-f01f'],['pp-f02n','pp-f02d','pp-f02p','pp-f02f'],
+    ['pp-f03n','pp-f03d','pp-f03p','pp-f03f'],['pp-f04n','pp-f04d','pp-f04p','pp-f04f'],
+    ['pp-f05n','pp-f05d','pp-f05p','pp-f05f']];
+  var tgts=[['psol-gf1n','psol-gf1d','psol-gf1p','psol-gf1f'],['psol-gf2n','psol-gf2d','psol-gf2p','psol-gf2f'],
+    ['psol-gf3n','psol-gf3d','psol-gf3p','psol-gf3f'],['psol-gf4n','psol-gf4d','psol-gf4p','psol-gf4f'],
+    ['psol-gf5n','psol-gf5d','psol-gf5p','psol-gf5f']];
+  rows.forEach(function(r,i){r.forEach(function(src,j){s(tgts[i][j],g(src));});});
+}
 function ppNext(fromIdx){
   const si=PP_SIG[PP_FLOW[fromIdx]];
   if(si&&!requireSig(si)) return;
   curPPPage=fromIdx+1;
+  if(PP_FLOW[curPPPage]==='pp-psol') syncSolPage();
   buildPPProgress(curPPPage);
   showPage(PP_FLOW[curPPPage]);
   const ns=PP_SIG[PP_FLOW[curPPPage]];
@@ -1865,7 +1945,7 @@ async function generarPDF(){
     let pageIds;
     if(tipoLegajo==='desreg') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-p4','dm-pmaq'];
     else if(tipoLegajo==='mono') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-pmaq'];
-    else pageIds=['pp-p0','pp-p1','pp-p2','pp-p3','pp-p4'];
+    else pageIds=['pp-psol','pp-p1','pp-p2','pp-p3','pp-p0','pp-p4','pp-p5'];
 
     let first=true;
     const mainContent=document.getElementById('mainContent');

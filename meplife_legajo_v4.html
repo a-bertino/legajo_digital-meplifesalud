@@ -1590,7 +1590,7 @@ const PATS_21_34=[
 function buildPatTable(tableId,pats){
   const t=document.getElementById(tableId); if(!t) return;
   t.innerHTML='<thead><tr><th style="width:38%;text-align:left;font-size:9px"></th><th style="width:6%">SI</th><th style="width:6%">NO</th><th style="width:26%">Integrantes</th><th style="width:14%">Patologías</th><th style="width:10%;padding:3px 5px">Fecha</th></tr></thead><tbody>'+
-  pats.map(([n,txt])=>`<tr id="ptr${n}" class="pat-row"><td style="font-size:9px;padding:4px 5px">${n} - ${txt}</td><td class="pat-radio"><label class="pat-lbl pat-lbl-si" id="ptrs${n}"><input type="radio" name="pat${n}" value="si" onchange="setPat('${n}','si')">SI</label></td><td class="pat-radio"><label class="pat-lbl pat-lbl-no checked" id="ptrn${n}"><input type="radio" name="pat${n}" value="no" checked onchange="setPat('${n}','no')">NO</label></td><td><input class="pat-inp" type="text" id="patn${n}"></td><td><input class="pat-inp" type="text" id="patp${n}"></td><td style="padding:3px 5px"><input class="pat-inp" type="text" id="patf${n}" style="text-align:center"></td></tr>`).join('')+
+  pats.map(([n,txt])=>`<tr id="ptr${n}" class="pat-row"><td style="font-size:9px;padding:4px 5px">${n} - ${txt}</td><td class="pat-radio"><label class="pat-lbl pat-lbl-si" id="ptrs${n}"><input type="radio" name="pat${n}" value="si" onchange="setPat('${n}','si')">SI</label></td><td class="pat-radio"><label class="pat-lbl pat-lbl-no checked" id="ptrn${n}"><input type="radio" name="pat${n}" value="no" checked onchange="setPat('${n}','no')">NO</label></td><td><input class="pat-inp" type="text" id="patn${n}"></td><td><input class="pat-inp" type="text" id="patp${n}"></td><td style="padding:3px 5px"><input class="pat-inp pat-fecha" type="text" id="patf${n}" placeholder="dd/mm/aaaa" maxlength="10" inputmode="numeric" style="text-align:center"></td></tr>`).join('')+
   '</tbody>';
 }
 
@@ -1684,23 +1684,16 @@ function buildSigsList(){
 // AUTO-FORMATO FECHAS dd/mm/aaaa
 // ══════════════════════════════════
 function initFechas(){
-  const IDS=[
-    'd-fecha','d-vigencia','d-fnac','deb-fecha','ps-fecha',
-    'pp-fecha','pp-vigencia','pp-fnac','pp-conv-inicio','pp-conv-fin'
-  ];
-  IDS.forEach(id=>{
-    const el=document.getElementById(id);
+  function attachFecha(el){
     if(!el||el._df) return;
     el._df=true;
     el.setAttribute('maxlength','10');
     el.setAttribute('inputmode','numeric');
-    // Bloquear teclas no numéricas (excepto control/borrado/navegación)
     el.addEventListener('keydown',function(e){
       if(e.ctrlKey||e.metaKey||e.altKey) return;
       if([8,9,46,37,38,39,40].includes(e.keyCode)) return;
       if(!/^\d$/.test(e.key)) e.preventDefault();
     });
-    // Formatear al escribir
     el.addEventListener('input',function(){
       let v=this.value.replace(/\D/g,'');
       if(v.length>8) v=v.substring(0,8);
@@ -1710,7 +1703,13 @@ function initFechas(){
       if(v.length>4) out+='/'+v.substring(4);
       this.value=out;
     });
-  });
+  }
+  // Campos individuales
+  ['d-fecha','d-vigencia','d-fnac','deb-fecha','ps-fecha',
+   'pp-fecha','pp-vigencia','pp-fnac','pp-conv-inicio','pp-conv-fin']
+  .forEach(id=>attachFecha(document.getElementById(id)));
+  // Columna Fecha de todas las tablas de patologías
+  document.querySelectorAll('.pat-fecha').forEach(el=>attachFecha(el));
 }
 
 // ══════════════════════════════════

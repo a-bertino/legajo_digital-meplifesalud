@@ -582,7 +582,7 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
             <div class="plan-card-tag">Cobertura básica</div>
           </div>
         </div>
-        <div class="plan-cards-2" id="pPlanDM-mono" style="display:none">
+        <div class="plan-cards-3" id="pPlanDM-mono" style="display:none">
           <div class="plan-card" onclick="selectPlanDM('Roble')">
             <div class="plan-card-ico">🌳</div>
             <div class="plan-card-name">ROBLE</div>
@@ -592,6 +592,11 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
             <div class="plan-card-ico">🌿</div>
             <div class="plan-card-name">CEIBO</div>
             <div class="plan-card-tag">Cobertura esencial</div>
+          </div>
+          <div class="plan-card" onclick="selectPlanDM('PMO')">
+            <div class="plan-card-ico">🏥</div>
+            <div class="plan-card-name">PMO</div>
+            <div class="plan-card-tag">Obra Social básica</div>
           </div>
         </div>
         <span class="back-lnk" onclick="showPage('pSel')">← Volver a selección</span>
@@ -1489,7 +1494,7 @@ function dlPDF(idx){
 // AFILIADO: TIPO / PLAN
 // ══════════════════════════════════
 function selectTipo(tipo){
-  tipoLegajo=tipo;
+  tipoLegajo=tipo; planDM='';
   if(tipo==='prepago'){ showPage('pPlan'); return; }
   if(tipo==='desreg'){
     document.getElementById('pPlanDM-title').textContent='Desregulado · Elegí tu plan';
@@ -1508,7 +1513,9 @@ function selectTipo(tipo){
   startDM();
 }
 
+let planDM='';
 function selectPlanDM(plan){
+  planDM=plan;
   const planField=document.getElementById('d-plan');
   if(planField) planField.value=plan;
   startDM();
@@ -1652,6 +1659,7 @@ function cIMCpp(k){const p=parseFloat(document.getElementById('pp-imc-'+k+'-p')?
 // PROGRESO DM
 // ══════════════════════════════════
 function getDMFlow(){
+  if(planDM==='PMO') return ['dm-p0','dm-p1','dm-p2','dm-pdocs'];
   const b=['dm-p0','dm-p1','dm-p2','dm-p3'];
   if(tipoLegajo==='desreg') b.push('dm-p4','dm-pmaq');
   else b.push('dm-pmaq');
@@ -1975,6 +1983,7 @@ async function generarPDF(saveOnly=false){
 
     let pageIds;
     if(tipoLegajo==='desreg') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-p4','dm-pmaq'];
+    else if(tipoLegajo==='mono'&&planDM==='PMO') pageIds=['dm-p0','dm-p1','dm-p2'];
     else if(tipoLegajo==='mono') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-pmaq'];
     else pageIds=['pp-psol','pp-p1','pp-p2','pp-p3','pp-p0','pp-p4','pp-p5'];
 

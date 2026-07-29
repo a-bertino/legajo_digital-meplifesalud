@@ -821,12 +821,13 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
         </div>
         <div style="font-size:9px;color:var(--text);line-height:1.65;margin:9px 0;text-align:justify">El salario sujeto a aportes y contribuciones declarado será controlado de acuerdo a la información que suministran las entidades que los distribuyen, por lo que, de existir adicionales, estos pueden ser recalculados periódicamente. El no cumplimiento del pago adicional y/o demás obligaciones asumidas, facultará a MepLife Salud SRL a reclamar el pago mensual de la suma establecida como diferencia arriba expresada, pudiendo suspender la cobertura superadora contratada y comprometiéndose solo a dispensar las prestaciones del PMO legalmente establecidas únicamente con la nómina de prestadores contemplada al efecto. - El afiliado podrá solicitar el cambio de Plan de Cobertura de Salud luego de transcurrido (6) seis meses desde su Afiliación- Alta en MEPLIFE SALUD S.R.L., debiendo permanecer en el mismo luego de efectuado dicho cambio (1) un año para poder solicitar un nuevo cambio de Plan de Cobertura de Salud. El cambio se hará efectivo al mes inmediatamente posterior de solicitado por el afiliado.</div>
         <table class="pst">
-          <tr><td>Plan Elegido</td><td><input type="text" id="ps-plan2"></td></tr>
-          <tr><td>Valor Cápita</td><td>$ <input type="text" id="ps-capita" style="width:75px"> &nbsp; Cantidad: <input type="text" id="ps-capitas" style="width:52px"></td></tr>
-          <tr><td>Costo Total del Plan</td><td>$ <input type="text" id="ps-costo-total"></td></tr>
-          <tr><td>Monto Aportes y Contribuciones</td><td>$ <input type="text" id="ps-monto-ap"></td></tr>
-          <tr><td>Diferencia a Abonar</td><td>$ <input type="text" id="ps-diferencia"></td></tr>
+          <tr><td>Plan Elegido</td><td><input type="text" id="ps-plan-elegido"></td></tr>
+          <tr><td>Valor Cápita</td><td>$ <input type="text" id="ps-capita" style="width:75px"> &nbsp; Cantidad de capitas: <input type="text" id="ps-capitas" style="width:52px"></td></tr>
+          <tr><td>Costo Total del Plan Elegido</td><td>$ <input type="text" id="ps-costo-total"></td></tr>
+          <tr><td>Monto Recibido Aportes y Contribuciones</td><td>$ <input type="text" id="ps-monto-ap"></td></tr>
+          <tr><td>Diferencia a Abonar por el Afiliado</td><td>$ <input type="text" id="ps-diferencia"></td></tr>
         </table>
+        <div style="text-align:center;margin-top:18px;padding-top:12px;border-top:1px solid #dde;font-size:10px;color:var(--muted)">Firma y Aclaración del Afiliado</div>
       </div>
       <div id="fb-dm4"></div>
       <div class="nav-btns"><button class="btn btn-back" onclick="dmPrev(4)">← Anterior</button><button class="btn btn-next" onclick="dmNext(4)">Continuar →</button></div>
@@ -841,7 +842,12 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
             <div class="maq-rnos">RNOS 1-1130-8</div>
           </div>
           <div style="text-align:center;font-size:11px;margin-bottom:14px">Lugar y fecha: <input type="text" id="maq-lugar-fecha" placeholder="Ciudad, dd/mm/aaaa" style="border:none;border-bottom:1px solid #333;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:195px;margin-left:4px"></div>
-          <div style="font-size:11px;line-height:1.8;color:#111">Que habiendo recibido la Cartilla médica de la Obra Social y a su vez habiendo sido informado de aquellos establecimientos, médicos, prestaciones médicas, farmacéuticas y demás detalles, dejo en el presente pleno consentimiento y conformidad de los servicios e información ofrecidos.</div>
+          <div style="font-size:11px;line-height:1.8;color:#111">Que habiendo recibido la Cartilla medica de la Obra Social y a su vez habiendo sido informado de aquellos establecimientos, médicos, prestaciones médicas, farmacéuticas y demás detalles, dejo en el presente pleno consentimiento y conformidad de los servicios o información ofrecidos</div>
+          <div style="margin-top:18px;font-size:11px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="min-width:70px">Firma:</span><div style="flex:1;border-bottom:1px solid #555;height:1px"></div></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="min-width:70px">Aclaración:</span><div style="flex:1;border-bottom:1px solid #555;height:1px"></div></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="min-width:70px">D.N.I. N°:</span><input type="text" id="maq-dni" style="border:none;border-bottom:1px solid #555;outline:none;font-size:11px;font-family:var(--font);background:transparent;flex:1"></div>
+          </div>
         </div>
       </div>
       <div id="fb-dmmaq"></div>

@@ -1451,7 +1451,7 @@ function agregarHijo(prefix,tbodyId){
 function dlPDF(idx){
   const legajos=getLegajos();
   const l=legajos[idx];
-  if(!l||!l.pdfData){ alert('PDF no disponible. Pedile al afiliado que lo descargue y lo reenvíe.'); return; }
+  if(!l||!l.pdfData){ alert('PDF aún no generado. El afiliado debe hacer click en "Descargar PDF completo" para que quede disponible aquí.'); return; }
   const a=document.createElement('a');
   a.href=l.pdfData;
   a.download='MepLife_'+(l.nombre||'Legajo').replace(/[^a-zA-Z0-9]/g,'_')+'.pdf';
@@ -2020,7 +2020,21 @@ async function generarPDF(){
 
     const g=document.getElementById('gest-final')?.textContent||'';
     const nbPDF=(tipoLegajo==='prepago'?document.getElementById('pp-nombre')?.value:document.getElementById('d-nombre')?.value)||'afiliado';
-    doc.save('MepLife_'+nbPDF.replace(/[^a-zA-Z0-9]/g,'_')+'_'+(g.replace('#',''))+'.pdf');
+    const fileName='MepLife_'+nbPDF.replace(/[^a-zA-Z0-9]/g,'_')+'_'+(g.replace('#',''))+'.pdf';
+
+    // Guardar PDF en el registro del vendedor
+    const pdfDataUri=doc.output('datauristring');
+    const efectivoVendorDNI=currentVendorDNI||
+      ((document.getElementById(tipoLegajo==='prepago'?'pp-asesor-dni':'d-asesor-dni')?.value||'').trim().replace(/\D/g,''));
+    if(efectivoVendorDNI){
+      const k=storageKey(efectivoVendorDNI);
+      try{
+        const lista=JSON.parse(localStorage.getItem(k)||'[]');
+        if(lista.length>0){ lista[0].pdfData=pdfDataUri; localStorage.setItem(k,JSON.stringify(lista)); }
+      }catch(e){ console.warn('No se pudo guardar PDF en localStorage:',e); }
+    }
+
+    doc.save(fileName);
 
   }catch(err){
     alert('Error al generar el PDF. Por favor intentá de nuevo.');

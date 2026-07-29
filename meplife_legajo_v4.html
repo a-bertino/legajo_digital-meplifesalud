@@ -662,12 +662,21 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
           <div class="fr">
             <div class="fh" style="flex:3"><span class="fl" style="min-width:128px">Nombre de la Empresa:</span><div class="fi"><input type="text" id="d-empresa"></div></div>
             <div class="fdiv"></div>
-            <div class="fh"><span class="fl" style="min-width:46px">Tel 1:</span><div class="fi"><input type="tel" id="d-emp-tel1"></div></div>
+            <div class="fh"><span class="fl" style="min-width:18px">N°:</span><div class="fi"><input type="text" id="d-emp-num" style="max-width:55px"></div></div>
+            <div class="fdiv"></div>
+            <div class="fh"><span class="fl" style="min-width:28px">Piso:</span><div class="fi"><input type="text" id="d-emp-piso" style="max-width:40px"></div></div>
+            <div class="fdiv"></div>
+            <div class="fh"><span class="fl" style="min-width:34px">Depto:</span><div class="fi"><input type="text" id="d-emp-dpto" style="max-width:40px"></div></div>
           </div>
           <div class="fr">
             <div class="fh" style="flex:2"><span class="fl" style="min-width:52px">CUIT N°:</span><div class="fi"><input type="text" id="d-cuit"></div></div>
             <div class="fdiv"></div>
+            <div class="fh"><span class="fl" style="min-width:60px">Teléfono 1:</span><div class="fi"><input type="tel" id="d-emp-tel1"></div></div>
+          </div>
+          <div class="fr">
             <div class="fh" style="flex:2"><span class="fl" style="min-width:66px">Dirección:</span><div class="fi"><input type="text" id="d-emp-dir"></div></div>
+            <div class="fdiv"></div>
+            <div class="fh"><span class="fl" style="min-width:60px">Teléfono 2:</span><div class="fi"><input type="tel" id="d-emp-tel2"></div></div>
           </div>
         </div>
         <div class="sec-t">DATOS DEL GRUPO FAMILIAR:</div>
@@ -684,17 +693,26 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
             </tbody>
           </table>
         </div>
-        <div class="sec-h2">DÉBITO AUTOMÁTICO</div>
+        <div style="margin:8px 0 4px;font-size:10px">ACLARACIÓN Y FIRMA DEL AFILIADO TITULAR: <span style="display:inline-block;border-bottom:1px solid #555;width:220px;margin-left:6px"></span></div>
+        <div class="sec-h2" style="margin-top:10px">SOLICITUD DE ADHESIÓN AL DÉBITO AUTOMÁTICO</div>
         <div class="deb-block">
           <div class="deb-title">TITULAR DE LA TARJETA DE CRÉDITO <span style="float:right;font-weight:400">Fecha: <input type="text" id="deb-fecha" placeholder="dd/mm/aaaa" style="border:none;border-bottom:1px solid #ccc;width:86px;font-size:10px;font-family:var(--font);background:transparent;outline:none"></span></div>
           <div class="deb-body">
-            <div class="deb-row"><div class="deb-cell" style="flex:2"><label>Apellido/s y Nombre/s</label><input type="text" id="deb-nombre"></div><div class="deb-cell"><label>Tipo y N° doc:</label><input type="text" id="deb-tdoc" style="max-width:80px"></div></div>
-            <div class="deb-row"><div class="deb-cell"><label>Tarjeta:</label><input type="text" id="deb-tarjeta"></div><div class="deb-cell"><label>N°:</label><input type="text" id="deb-num"></div><div class="deb-cell"><label>Vto:</label><input type="text" id="deb-vto" placeholder="mm/aa"></div></div>
-            <div class="legal-small">Autorizo el débito automático mensual de las cuotas de MePLIFE Salud. La autorización es válida hasta el vencimiento de la tarjeta.</div>
+            <div class="deb-row"><div class="deb-cell" style="flex:2"><label>Apellido/s y Nombre/s</label><input type="text" id="deb-nombre"></div><div class="deb-cell"><label>Tipo y N° de documento:</label><input type="text" id="deb-tdoc" style="max-width:80px"></div></div>
+            <div class="deb-row"><div class="deb-cell"><label>Tarjeta de Crédito:</label><input type="text" id="deb-tarjeta"></div><div class="deb-cell"><label>N°:</label><input type="text" id="deb-num"></div><div class="deb-cell"><label>Vencimiento:</label><input type="text" id="deb-vto" placeholder="mm/aa"></div></div>
+            <div class="legal-small">El que suscribe, en mi carácter de titular de la tarjeta de crédito, autorizo por la presente a realizar el débito automático mensual de las cuotas de servicio ofrecido por MePLIFE Salud al titular de la cobertura anteriormente mencionado. La presente autorización tiene validez desde la recepción de la misma por el Establecimiento hasta el vencimiento de la tarjeta, en tanto no medie comunicación fehaciente de mi parte para revocarla. De la misma manera me comprometo a informar cualquier cambio de N° de la tarjeta para la continuidad de los débitos.</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:9px;border-top:1px solid #dde">
               <div style="text-align:center"><div style="height:1px;background:#888;margin-top:16px;margin-bottom:3px"></div><div style="font-size:9px;color:var(--muted)">FIRMA</div></div>
               <div style="text-align:center"><div style="height:1px;background:#888;margin-top:16px;margin-bottom:3px"></div><div style="font-size:9px;color:var(--muted)">ACLARACIÓN</div></div>
             </div>
+          </div>
+        </div>
+        <div class="sec-h2" style="margin-top:10px">PAGO FÁCIL</div>
+        <div class="deb-block">
+          <div class="deb-title">TITULAR DE LA TARJETA DE CRÉDITO <span style="float:right;font-weight:400">Fecha: <input type="text" id="deb-pf-fecha" placeholder="dd/mm/aaaa" style="border:none;border-bottom:1px solid #ccc;width:86px;font-size:10px;font-family:var(--font);background:transparent;outline:none"></span></div>
+          <div class="deb-body">
+            <div class="deb-row"><div class="deb-cell" style="flex:2"><label>Apellido/s y Nombre/s</label><input type="text" id="deb-pf-nombre"></div><div class="deb-cell"><label>Tipo y N° de documento:</label><input type="text" id="deb-pf-tdoc" style="max-width:80px"></div></div>
+            <div style="padding:7px 10px;font-size:9px;font-style:italic;color:var(--muted);border-top:1px solid #eee">LA FACTURA SERÁ ENVIADA AL DOMICILIO PARTICULAR</div>
           </div>
         </div>
       </div>
@@ -722,6 +740,8 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
             <tr><td class="pc">Concubino/a</td><td><input type="text" id="imc-cc-n"></td><td><input type="number" id="imc-cc-e"></td><td><input type="number" id="imc-cc-p" oninput="cIMC('cc')"></td><td><input type="number" id="imc-cc-a" oninput="cIMC('cc')"></td><td><input type="text" id="imc-cc-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
             <tr><td class="pc">Hijo/a 1</td><td><input type="text" id="imc-h1-n"></td><td><input type="number" id="imc-h1-e"></td><td><input type="number" id="imc-h1-p" oninput="cIMC('h1')"></td><td><input type="number" id="imc-h1-a" oninput="cIMC('h1')"></td><td><input type="text" id="imc-h1-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
             <tr><td class="pc">Hijo/a 2</td><td><input type="text" id="imc-h2-n"></td><td><input type="number" id="imc-h2-e"></td><td><input type="number" id="imc-h2-p" oninput="cIMC('h2')"></td><td><input type="number" id="imc-h2-a" oninput="cIMC('h2')"></td><td><input type="text" id="imc-h2-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
+            <tr><td class="pc">Hijo/a 3</td><td><input type="text" id="imc-h3-n"></td><td><input type="number" id="imc-h3-e"></td><td><input type="number" id="imc-h3-p" oninput="cIMC('h3')"></td><td><input type="number" id="imc-h3-a" oninput="cIMC('h3')"></td><td><input type="text" id="imc-h3-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
+            <tr><td class="pc">Hijo/a 4</td><td><input type="text" id="imc-h4-n"></td><td><input type="number" id="imc-h4-e"></td><td><input type="number" id="imc-h4-p" oninput="cIMC('h4')"></td><td><input type="number" id="imc-h4-a" oninput="cIMC('h4')"></td><td><input type="text" id="imc-h4-i" readonly style="background:#f0f4fa;font-weight:700;color:var(--blue)"></td></tr>
           </tbody>
         </table>
         <button class="btn-add-hijo" onclick="agregarHijo('imc','imc-tbody')">+ Agregar Hijo/a</button>
@@ -742,16 +762,18 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
       <div class="doc-sheet">
         <div style="font-size:11px;font-weight:700;margin-bottom:8px">DECLARACIÓN DE ESTADO DE SALUD — Continuación · Preguntas 21 a 34</div>
         <div style="overflow-x:auto;margin-bottom:11px"><table class="pat-t" id="patTable2"></table></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;border:1px solid #aab;padding:6px 10px;margin-bottom:10px">
-          <div style="display:flex;align-items:center;gap:6px"><label style="font-size:10px;font-weight:600;white-space:nowrap">Email:</label><input type="email" id="dj-email" style="border:none;border-bottom:1px solid #888;outline:none;font-size:10px;font-family:var(--font);flex:1;background:transparent"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;border:1px solid #aab;padding:6px 10px;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:6px;flex:2;min-width:180px"><label style="font-size:10px;font-weight:600;white-space:nowrap">Domicilio electrónico denunciado:</label><input type="email" id="dj-email" style="border:none;border-bottom:1px solid #888;outline:none;font-size:10px;font-family:var(--font);flex:1;background:transparent"></div>
           <div style="display:flex;align-items:center;gap:6px"><label style="font-size:10px;font-weight:600;white-space:nowrap">Tel.:</label><input type="tel" id="dj-tel" style="border:none;border-bottom:1px solid #888;outline:none;font-size:10px;font-family:var(--font);flex:1;background:transparent"></div>
         </div>
-        <div class="dj-t">Manifiesto conocer plenamente el Estatuto, Contrato de Adhesión y Reglamentaciones de MEPLIFE SALUD. Dejo constancia en carácter de Declaración Jurada lo siguiente:</div>
-        <div class="dj-i"><strong>1)</strong> Mi grupo familiar primario está constituido según lo declarado.</div>
-        <div class="dj-i"><strong>2)</strong> Declaro bajo juramento no padecer enfermedad alguna salvo lo enumerado precedentemente.</div>
-        <div class="dj-i"><strong>3)</strong> Los datos consignados son auténticos. Me obligo a comunicar cualquier cambio.</div>
-        <div class="dj-i"><strong>4)</strong> Manifiesto haber tomado conocimiento de: penalidades por ocultar información, aportes adicionales por patologías preexistentes, obligatoriedad del grupo familiar, formas de pago, vigencia de la cobertura y red de prestadores.</div>
-        <div class="dj-i"><strong>5)</strong> Acepto recibir información afiliatoria en el correo electrónico declarado (Ley Nº 24.240 art. 4°).</div>
+        <div style="display:flex;align-items:center;gap:6px;border:1px solid #aab;padding:5px 10px;margin-bottom:8px"><label style="font-size:10px;font-weight:600;white-space:nowrap">Email:</label><input type="email" id="dj-email2" style="border:none;border-bottom:1px solid #888;outline:none;font-size:10px;font-family:var(--font);flex:1;background:transparent"></div>
+        <div class="dj-t">Manifiesto conocer plenamente, por haber sido entregado y encontrarse (siendo de acceso público) en la página web <strong>www.meplife.com.ar</strong>: el Estatuto, Contrato de Adhesión, las Reglamentaciones del Servicio de Salud, Planes de Cobertura del Servicio de Atención a la Salud en vigencia de MEPLIFE SALUD, y derechos que emergen de los mismos, a cuyo contenido presto total conformidad. A la vez, dejo constancia en carácter de Declaración Jurada, lo siguiente:</div>
+        <div class="dj-i"><strong>1)</strong> - Mi grupo Familiar Primario está constituido según lo declarado</div>
+        <div class="dj-i"><strong>2)</strong> - Declaro bajo juramento no padecer enfermedad alguna tanto en lo personal como en relación a mi grupo familiar, a excepción de lo enumerado en precedentemente, todo según consta en la Declaración de Estado de Salud, la que he confeccionado de mi puño y letra.</div>
+        <div class="dj-i"><strong>3)</strong> - Los datos consignados en la presente son auténticos.</div>
+        <div class="dj-i"><strong>4)</strong> - Me obligo a comunicar cualquier cambio de situación a lo declarado en la presente</div>
+        <div class="dj-i"><strong>5)</strong> - Manifiesto haber tomado conocimiento de: <strong>a)-</strong> Penalidades por ocultar o desvirtuar información del estado de salud, Patologías Preexistentes. <strong>b)-</strong> Conocimiento de aportes adicionales/ diferenciales por padecer (habiendo declarado) las Patologías Preexistentes establecidas en el listado de Asociación MEPLIFE SALUD. <strong>c)-</strong> Obligatoriedad de ingreso de la totalidad del grupo familiar (conformación de grupo familiar). Valor adicional por ingreso de nuevo integrante. <strong>d)-</strong> Valor del Plan acorde al domicilio de residencia declarado. <strong>e)-</strong> Formas de pago acordes a las necesidades a través de efectivo, transferencia bancaria, tarjeta de débito y crédito. <strong>f)-</strong> Fecha de vencimiento para el pago de aportes y las consecuencias derivadas de la falta de cancelación en término. <strong>g)-</strong> Acceso al servicio de Salud a través de credencial que me habilita como Asociado y las normas generales de su alcance. <strong>h)-</strong> Esquema de Autorizaciones Previas para acceso a determinadas prestaciones. <strong>i)-</strong> Detalle de Reconocimientos de MEPLIFE SALUD conforme al Plan elegido. <strong>j)-</strong> Red de Prestadores acorde al plan de Salud elegido</div>
+        <div class="dj-i"><strong>6)</strong> - Dejo expresa constancia que, de conformidad con el artículo 4° de la Ley de Defensa del Consumidor – Ley N° 24.240 -, acepto recibir información afiliatoria y/o de cualquier otro índole relacionada con el servicio contratado en el correo electrónico denunciado</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-top:13px;padding-top:9px;border-top:1px dashed #bbb">
           <div style="text-align:center;display:flex;flex-direction:column;align-items:center"><input type="text" id="dj-lugar" placeholder="Lugar" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:100%;text-align:center"><label style="font-size:9px;color:var(--muted);margin-top:4px">Lugar y Fecha</label></div>
           <div style="text-align:center"><div style="height:1px;background:#888;margin-top:17px;margin-bottom:3px"></div><div style="font-size:9px;color:var(--muted)">Firma del Titular</div></div>
@@ -788,17 +810,16 @@ html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var
           <div style="font-size:13px;font-weight:900;text-decoration:underline;margin-bottom:3px">SOLICITUD DE PLAN SUPERADOR</div>
           <div style="font-size:11px;font-weight:700;text-decoration:underline">COMPROMISO DE PAGO ADICIONALES</div>
         </div>
-        <div style="font-size:10px;margin-bottom:7px;display:flex;gap:5px;flex-wrap:wrap;align-items:flex-end">
-          <span>En fecha</span><input type="text" id="ps-fecha" placeholder="dd/mm/aaaa" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:88px">
-          <span>Sr./Sra.</span><input type="text" id="ps-nombre" placeholder="Apellido y Nombre" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;flex:1;min-width:110px">
-          <span>DNI</span><input type="text" id="ps-dni" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:78px">
+        <div style="font-size:9.5px;line-height:1.8;margin-bottom:7px;display:flex;gap:4px;flex-wrap:wrap;align-items:baseline">
+          <span>En fecha</span><input type="text" id="ps-fecha" placeholder="dd/mm/aaaa" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9.5px;font-family:var(--font);background:transparent;width:88px">
+          <span>quién suscribe la presente Sr/Sra.</span><input type="text" id="ps-nombre" placeholder="Apellido y Nombre" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9.5px;font-family:var(--font);background:transparent;flex:1;min-width:110px"><span>, Argentino/a, mayor de edad, DNI n°</span><input type="text" id="ps-dni" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9.5px;font-family:var(--font);background:transparent;width:78px"><span>, con domicilio en</span><input type="text" id="ps-dom" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9.5px;font-family:var(--font);background:transparent;flex:1;min-width:90px"><span>de la ciudad de</span><input type="text" id="ps-ciudad" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9.5px;font-family:var(--font);background:transparent;width:88px"><span>Provincia de</span><input type="text" id="ps-prov" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9.5px;font-family:var(--font);background:transparent;width:76px"><span>, asumo el compromiso de abonar mensualmente la suma de $</span><input type="text" id="ps-suma" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9.5px;font-family:var(--font);background:transparent;width:72px"><span>, a los efectos de atender el costo adicional de la cobertura contratada con la firma MepLife Salud SRL, plan</span><input type="text" id="ps-plan2" style="border:none;border-bottom:1px solid #555;outline:none;font-size:9.5px;font-family:var(--font);background:transparent;width:90px"><span>y que corresponde a consecuencia de los siguientes motivos:</span>
         </div>
-        <div style="font-size:10px;margin-bottom:7px;display:flex;gap:5px;flex-wrap:wrap;align-items:flex-end">
-          <span>Domicilio:</span><input type="text" id="ps-dom" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;flex:1">
-          <span>Ciudad:</span><input type="text" id="ps-ciudad" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:88px">
-          <span>Prov.:</span><input type="text" id="ps-prov" style="border:none;border-bottom:1px solid #555;outline:none;font-size:10px;font-family:var(--font);background:transparent;width:76px">
+        <div style="font-size:9px;margin:5px 0 5px 12px">
+          <div>1.- Aumento del precio del plan.</div>
+          <div>2.- Variación en aportes y contribuciones.</div>
+          <div>3.- Modificación en la composición del grupo familiar.</div>
         </div>
-        <div style="font-size:9px;color:var(--text);line-height:1.65;margin:9px 0;text-align:justify">El salario sujeto a aportes declarado será controlado de acuerdo a la información que suministran las entidades distribuidoras. El no cumplimiento del pago adicional facultará a MepLife Salud SRL a reclamar dicho pago y suspender la cobertura superadora.</div>
+        <div style="font-size:9px;color:var(--text);line-height:1.65;margin:9px 0;text-align:justify">El salario sujeto a aportes y contribuciones declarado será controlado de acuerdo a la información que suministran las entidades que los distribuyen, por lo que, de existir adicionales, estos pueden ser recalculados periódicamente. El no cumplimiento del pago adicional y/o demás obligaciones asumidas, facultará a MepLife Salud SRL a reclamar el pago mensual de la suma establecida como diferencia arriba expresada, pudiendo suspender la cobertura superadora contratada y comprometiéndose solo a dispensar las prestaciones del PMO legalmente establecidas únicamente con la nómina de prestadores contemplada al efecto. - El afiliado podrá solicitar el cambio de Plan de Cobertura de Salud luego de transcurrido (6) seis meses desde su Afiliación- Alta en MEPLIFE SALUD S.R.L., debiendo permanecer en el mismo luego de efectuado dicho cambio (1) un año para poder solicitar un nuevo cambio de Plan de Cobertura de Salud. El cambio se hará efectivo al mes inmediatamente posterior de solicitado por el afiliado.</div>
         <table class="pst">
           <tr><td>Plan Elegido</td><td><input type="text" id="ps-plan2"></td></tr>
           <tr><td>Valor Cápita</td><td>$ <input type="text" id="ps-capita" style="width:75px"> &nbsp; Cantidad: <input type="text" id="ps-capitas" style="width:52px"></td></tr>

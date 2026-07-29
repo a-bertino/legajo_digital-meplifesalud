@@ -1444,7 +1444,8 @@ function cIMCpp(k){const p=parseFloat(document.getElementById('pp-imc-'+k+'-p')?
 // ══════════════════════════════════
 function getDMFlow(){
   const b=['dm-p0','dm-p1','dm-p2','dm-p3'];
-  b.push(tipoLegajo==='desreg'?'dm-p4':'dm-pmaq');
+  if(tipoLegajo==='desreg') b.push('dm-p4','dm-pmaq');
+  else b.push('dm-pmaq');
   b.push('dm-pdocs'); return b;
 }
 const DM_LBL={'dm-p0':'Solicitud','dm-p1':'Salud 1-20','dm-p2':'Salud 21-34','dm-p3':'Conformidad','dm-p4':'Plan Super.','dm-pmaq':'Maquinistas','dm-pdocs':'Docs'};
@@ -1696,232 +1697,85 @@ async function generarPDF(){
   try{
     const{jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-    const M=14, W=182;
-    const azul=[26,95,168], gris=[90,110,140];
-    let y=15;
+    const A4W=210, A4H=297;
+    const SCALE=2, RENDER_W=794;
+    // Altura de una página A4 en píxeles del canvas (scale:2)
+    const A4_PX=Math.round(RENDER_W*(A4H/A4W)*SCALE); // ~2246px
 
-    const fv=id=>document.getElementById(id)?.value||'—';
+    let pageIds;
+    if(tipoLegajo==='desreg') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-p4','dm-pmaq'];
+    else if(tipoLegajo==='mono') pageIds=['dm-p0','dm-p1','dm-p2','dm-p3','dm-pmaq'];
+    else pageIds=['pp-p0','pp-p1','pp-p2','pp-p3','pp-p4'];
 
-    function hdr(title,sub=''){
-      doc.setFillColor(...azul);doc.rect(0,0,210,11,'F');
-      doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(8);
-      doc.text('GRUPO MePLIFE SALUD · Legajo Digital · 0800 444 0418',M,7.5);
-      y=16;
-      doc.setTextColor(...azul);doc.setFont('helvetica','bold');doc.setFontSize(11);
-      doc.text(title,M,y);y+=6;
-      if(sub){doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...gris);doc.text(sub,M,y);y+=5;}
-      doc.setTextColor(30,35,64);
-    }
+    let first=true;
+    const mainContent=document.getElementById('mainContent');
+    const origMaxW=mainContent.style.maxWidth;
+    mainContent.style.maxWidth='none';
 
-    function sec(t){
-      if(y>268){doc.addPage();y=15;}
-      doc.setFillColor(...azul);doc.rect(M,y,W,5.5,'F');
-      doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(8);
-      doc.text(t,M+2,y+3.8);y+=8.5;doc.setTextColor(30,35,64);
-    }
+    for(const pid of pageIds){
+      const pageEl=document.getElementById(pid);
+      if(!pageEl||!pageEl.querySelector('.doc-sheet')) continue;
 
-    function row(lbl,val){
-      if(y>268){doc.addPage();y=15;}
-      doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...azul);
-      const lblW=doc.getTextWidth(lbl);
-      doc.text(lbl,M,y);
-      doc.setFont('helvetica','normal');doc.setTextColor(30,35,64);
-      const avail=W-lblW-3;
-      const str=val||'—';
-      if(avail>30){
-        const lines=doc.splitTextToSize(str,avail);
-        doc.text(lines,M+lblW+2,y);
-        y+=Math.max(5.5,lines.length*4.5);
-      } else {
-        y+=4.5;
-        const lines=doc.splitTextToSize(str,W);
-        doc.text(lines,M,y);
-        y+=Math.max(5.5,lines.length*4.5);
-      }
-    }
+      // Forzar ancho A4 y hacer visible
+      const wasActive=pageEl.classList.contains('active');
+      pageEl.style.cssText+=';display:block!important;animation:none!important;opacity:1!important;'
+        +'width:'+RENDER_W+'px!important;min-width:'+RENDER_W+'px!important;max-width:'+RENDER_W+'px!important;'
+        +'background:#ffffff!important';
+      await new Promise(r=>setTimeout(r,200));
 
-    function par(t,sz=8){
-      if(y>268){doc.addPage();y=15;}
-      doc.setFont('helvetica','normal');doc.setFontSize(sz);
-      const lines=doc.splitTextToSize(t,W);
-      doc.setTextColor(30,35,64);doc.text(lines,M,y);
-      y+=lines.length*(sz*0.5)+3;
-    }
-
-    function sigBlock(idx,label){
-      const sd=sigData[idx];
-      const ac=sigAclar[idx]||(document.getElementById('sigAclar-'+idx)?.value||'—');
-      const dn=sigDNIs[idx]||(document.getElementById('sigDNI-'+idx)?.value||'—');
-      const ti=sigTimes[idx]||'—';
-      const need=sd?44:26;
-      if(y>297-need-10){doc.addPage();y=15;}
-      doc.setFillColor(232,240,251);doc.rect(M,y,W,6,'F');
-      doc.setTextColor(...azul);doc.setFont('helvetica','bold');doc.setFontSize(9);
-      doc.text('✍ FIRMA — '+label,M+2,y+4.2);y+=9;
-      if(sd){try{doc.addImage(sd,'PNG',M,y,82,22);}catch(e){}}
-      const mx=sd?M+86:M; const mw=sd?W-86:W;
-      doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.setTextColor(...azul);
-      doc.text('Aclaración:',mx,y+4);
-      doc.setFont('helvetica','normal');doc.setTextColor(30,35,64);
-      const acStr=doc.splitTextToSize(ac,mw-doc.getTextWidth('Aclaración:')-2)[0]||ac;
-      doc.text(acStr,mx+doc.getTextWidth('Aclaración:')+1,y+4);
-      doc.setFont('helvetica','bold');doc.setTextColor(...azul);
-      doc.text('DNI:',mx,y+10);
-      doc.setFont('helvetica','normal');doc.setTextColor(30,35,64);
-      doc.text(dn.substring(0,25),mx+doc.getTextWidth('DNI:')+1,y+10);
-      doc.setFontSize(7);doc.setTextColor(...gris);
-      doc.text('Fecha: '+ti,mx,y+16);
-      doc.text('Firmado digitalmente — Ley 25.506',mx,y+20);
-      y+=29;
-      doc.setDrawColor(...azul);doc.setLineWidth(0.25);doc.line(M,y,M+W,y);y+=5;
-    }
-
-    function patRows(pats){
-      pats.forEach(([n,desc])=>{
-        if(y>268){doc.addPage();y=15;}
-        const si=document.querySelector('input[name="pat'+n+'"][value="si"]');
-        const resp=si&&si.checked?'SI':'NO';
-        doc.setFont('helvetica','bold');doc.setFontSize(7.5);
-        doc.setTextColor(...(resp==='SI'?[180,30,30]:azul));
-        const lines=doc.splitTextToSize(n+'. '+resp+' — '+desc,W-2);
-        doc.text(lines,M,y);y+=lines.length*3.6+1;
-      });
-      doc.setTextColor(30,35,64);
-    }
-
-    // ══════════════════════════════
-    //  DESREGULADO / MONOTRIBUTO
-    // ══════════════════════════════
-    if(tipoLegajo==='desreg'||tipoLegajo==='mono'){
-      const sub=tipoLegajo==='mono'?'Monotributo':'Desregulado / Relación de Dependencia';
-
-      hdr('SOLICITUD DE INGRESO',sub);
-      sec('Datos del Titular');
-      row('Apellido y Nombre:',fv('d-nombre'));
-      row('Documento:',fv('d-doc'));
-      row('CUIL N°:',fv('d-cuil'));
-      row('Fecha Nac / Edad:',fv('d-fnac')+' / '+fv('d-edad'));
-      sec('Domicilio');
-      row('Calle N°:',fv('d-calle')+' '+fv('d-num'));
-      row('Localidad:',fv('d-loc'));
-      row('Email:',fv('d-email'));
-      row('Tel 1:',fv('d-tel1'));
-      sec('Información Laboral');
-      row('Empresa:',fv('d-empresa'));
-      row('CUIT:',fv('d-cuit'));
-      sec('Plan y Asesor');
-      row('Asesor Comercial:',fv('d-asesor'));
-      row('Plan:',fv('d-plan'));
-      row('Vigencia:',fv('d-vigencia'));
-      row('Cuota $:',fv('d-cuota'));
-      y+=3;sigBlock('dm0','Solicitud de Ingreso');
-
-      doc.addPage();y=15;
-      hdr('DECLARACIÓN DE ESTADO DE SALUD','Secreto Médico — Preguntas 01 a 20');
-      patRows(PATS_1_20);
-      y+=3;sigBlock('dm1','Declaración de Salud (01-20)');
-
-      doc.addPage();y=15;
-      hdr('DECLARACIÓN DE ESTADO DE SALUD — Continuación','Preguntas 21 a 34 + Declaración Jurada');
-      patRows(PATS_21_34);
-      y+=3;sec('Declaración Jurada');
-      par('Manifiesto conocer plenamente el Estatuto, Contrato de Adhesión y Reglamentaciones de MEPLIFE SALUD. Declaro bajo juramento no padecer enfermedad alguna salvo lo declarado. Los datos son auténticos.',8);
-      y+=2;sigBlock('dm2','Declaración de Salud (21-34) + DJ');
-
-      doc.addPage();y=15;
-      hdr('NOTA DE CONFORMIDAD','Formularios de Ingreso, Reconocimiento y Bonificación');
-      row('DES N°:',fv('conf-des-n'));
-      row('SSS N°:',fv('conf-sss'));
-      row('Obra Social:',fv('conf-os-from')+' → '+fv('conf-os-to'));
-      row('Plan de Salud:',fv('conf-plan'));
-      row('DNI:',fv('conf-dni'));
-      y+=2;par('"De acuerdo con la información brindada, acepto lo mencionado en cada uno de los puntos de la Nota de Conformidad recibida."',8);
-      y+=3;sigBlock('dm3','Nota de Conformidad');
-
-      doc.addPage();y=15;
-      if(tipoLegajo==='desreg'){
-        hdr('SOLICITUD DE PLAN SUPERADOR','Compromiso de Pago Adicionales');
-        row('Apellido y Nombre:',fv('ps-nombre'));
-        row('DNI:',fv('ps-dni'));
-        row('Plan:',fv('ps-plan2'));
-        row('Valor Cápita:',fv('ps-capita'));
-        row('Costo Total:',fv('ps-costo-total'));
-        row('Diferencia a Abonar:',fv('ps-diferencia'));
-        y+=3;sigBlock('dm4','Plan Superador');
-      } else {
-        hdr('OBRA SOCIAL DE MAQUINISTAS DE TEATRO Y TELEVISIÓN','RNOS 1-1130-8');
-        y+=4;
-        par('Que habiendo recibido la Cartilla médica de la Obra Social y habiendo sido informado de aquellos establecimientos, médicos, prestaciones médicas, farmacéuticas y demás detalles, dejo en el presente pleno consentimiento y conformidad de los servicios e información ofrecidos.',9);
-        row('Lugar y Fecha:',fv('maq-lugar-fecha'));
-        y+=3;sigBlock('dmmaq','Maquinistas de Teatro y Televisión');
-      }
-
-    } else {
-      // ══════════════════════════════
-      //  PREPAGO
-      // ══════════════════════════════
-      const planName=planPrepago==='ceibo'?'CEIBO':'ROBLE';
-
-      hdr('FICHA DE INGRESO — PLAN PREPAGO "'+planName+'"','Cobertura Prepaga de Salud MepLife Salud SRL');
-      sec('Datos del Solicitante');
-      row('Apellido y Nombre:',fv('pp-nombre'));
-      row('DNI / CUIL:',fv('pp-dni')+' / '+fv('pp-cuil'));
-      row('Fecha Nac / Edad:',fv('pp-fnac')+' / '+fv('pp-edad'));
-      row('Domicilio:',fv('pp-dom'));
-      row('Localidad / Provincia:',fv('pp-loc')+' / '+fv('pp-prov'));
-      row('Tel / Móvil:',fv('pp-tel')+' / '+fv('pp-movil'));
-      row('Email:',fv('pp-email'));
-      row('Cápitas / Costo:',fv('pp-capitas')+' / $'+fv('pp-costo'));
-      row('Asesor:',fv('pp-asesor'));
-      y+=3;sigBlock('pp0','Ficha de Ingreso Prepago');
-
-      doc.addPage();y=15;
-      hdr('DECLARACIÓN DE ESTADO DE SALUD','Secreto Médico — Preguntas 01 a 20');
-      patRows(PATS_1_20);
-      y+=3;sigBlock('pp1','Declaración de Salud (01-20)');
-
-      doc.addPage();y=15;
-      hdr('DECLARACIÓN DE ESTADO DE SALUD — Continuación','Preguntas 21 a 34');
-      patRows(PATS_21_34);
-      y+=3;sigBlock('pp2','Declaración de Salud (21-34)');
-
-      doc.addPage();y=15;
-      hdr('NOTA DE CONFORMIDAD','Prepago');
-      row('DES N°:',fv('pp-conf-des'));
-      row('Plan:',fv('pp-conf-plan'));
-      row('DNI:',fv('pp-conf-dni'));
-      y+=3;sigBlock('pp3','Nota de Conformidad');
-
-      doc.addPage();y=15;
-      hdr('CONVENIO DE PRESTACIONES — PLAN "'+planName+'"','');
-      row('Nombre:',fv('pp-conv-nombre'));
-      row('DNI:',fv('pp-conv-dni'));
-      row('Domicilio:',fv('pp-conv-dom'));
-      row('Ciudad / Provincia:',fv('pp-conv-ciudad')+' / '+fv('pp-conv-prov'));
-      row('Costo mensual $:',fv('pp-conv-costo'));
-      row('Vigencia desde:',fv('pp-conv-inicio'));
-      row('Vigencia hasta:',fv('pp-conv-fin'));
-      y+=3;sigBlock('pp4','Convenio de Prestaciones');
-    }
-
-    // Documentos adjuntos
-    if(uploadedDocData.length>0){
-      doc.addPage();y=15;
-      hdr('DOCUMENTACIÓN ADJUNTA','Archivos subidos por el afiliado');
-      uploadedDocData.forEach((d,i)=>{
-        if(y>240){doc.addPage();y=15;}
-        doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...azul);
-        doc.text('Documento '+(i+1)+': '+d.nombre,M,y);y+=6;
-        if(d.tipo&&d.tipo.startsWith('image/')&&d.dataUrl){
-          try{doc.addImage(d.dataUrl,d.tipo.split('/')[1].toUpperCase(),M,y,W,70);y+=74;}
-          catch(e){doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...gris);doc.text('(Imagen no insertada)',M,y);y+=6;}
-        } else {
-          doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...gris);
-          doc.text('(Archivo: '+d.nombre+')',M,y);y+=6;
+      // Redibujar firmas guardadas
+      const sigPromises=[];
+      pageEl.querySelectorAll('.sig-canvas').forEach(c=>{
+        const idx=c.id.replace('sig-','');
+        if(sigData&&sigData[idx]){
+          sigPromises.push(new Promise(res=>{
+            const img=new Image();
+            img.onload=()=>{c.getContext('2d').clearRect(0,0,c.width,c.height);c.getContext('2d').drawImage(img,0,0);res();};
+            img.onerror=res; img.src=sigData[idx];
+          }));
         }
-        y+=4;
       });
+      if(sigPromises.length) await Promise.all(sigPromises);
+      await new Promise(r=>setTimeout(r,60));
+
+      let canvas;
+      try{
+        canvas=await html2canvas(pageEl,{
+          scale:SCALE,useCORS:true,allowTaint:true,
+          backgroundColor:'#ffffff',logging:false,imageTimeout:20000,
+          windowWidth:RENDER_W,width:RENDER_W,height:pageEl.scrollHeight,
+          ignoreElements:el=>el.classList.contains('nav-btns')
+        });
+      }catch(e){console.warn('html2canvas error:',e);}
+
+      // Restaurar estilos
+      if(!wasActive) pageEl.style.display='';
+      pageEl.style.cssText=pageEl.style.cssText
+        .replace(/display:[^;]+;?/g,'').replace(/animation:[^;]+;?/g,'')
+        .replace(/opacity:[^;]+;?/g,'').replace(/width:[^;]+;?/g,'')
+        .replace(/min-width:[^;]+;?/g,'').replace(/max-width:[^;]+;?/g,'')
+        .replace(/background:[^;]+;?/g,'');
+
+      if(!canvas||canvas.width<10||canvas.height<10) continue;
+
+      // Cortar el canvas en trozos de altura A4 y agregar cada trozo como página
+      const cW=canvas.width, cH=canvas.height;
+      let sliceTop=0;
+      while(sliceTop<cH){
+        const sliceH=Math.min(A4_PX,cH-sliceTop);
+        const tmp=document.createElement('canvas');
+        tmp.width=cW; tmp.height=sliceH;
+        const ctx=tmp.getContext('2d');
+        ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,cW,sliceH);
+        ctx.drawImage(canvas,0,-sliceTop);
+        if(!first) doc.addPage(); first=false;
+        const mmH=(sliceH/cW)*A4W;
+        doc.addImage(tmp.toDataURL('image/jpeg',0.93),'JPEG',0,0,A4W,mmH);
+        sliceTop+=A4_PX;
+      }
     }
+
+    mainContent.style.maxWidth=origMaxW;
 
     const g=document.getElementById('gest-final')?.textContent||'';
     const nbPDF=(tipoLegajo==='prepago'?document.getElementById('pp-nombre')?.value:document.getElementById('d-nombre')?.value)||'afiliado';
